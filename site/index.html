@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EEADB-Tchirimina - Prototype</title>
+  <link href="assets/main.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
+  <script defer src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+  <script defer src="assets/main.js"></script>
+</head>
+<body>
+  <header>
+    <h1>EEADB-Tchirimina</h1>
+    <p class="tag">Temple BERACA — "Avec Dieu nous ferons des exploits"</p>
+  </header>
+
+  <main>
+    <section id="verset">
+      <h2>Verset du jour</h2>
+      <blockquote id="verset-text">Chargement...</blockquote>
+      <cite id="verset-ref"></cite>
+    </section>
+
+    <section id="calendar-section">
+      <h2>Calendrier des événements</h2>
+      <div id="calendar"></div>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <p class="dev-note">(Pour tester l'envoi réel : renseignez l'URL de l'endpoint serverless ci-dessous puis cliquez sur Envoyer)</p>
+      <label class="dev-input">URL endpoint serverless<br><input id="endpoint-url" placeholder="https://your-server.com/trigger-email"></label>
+      <br>
+      <form id="contact-form">
+        <label>Nom<br><input name="name" required></label><br>
+        <label>Email<br><input name="email" type="email" required></label><br>
+        <label>Message<br><textarea name="message" required></textarea></label><br>
+        <button type="submit">Envoyer</button>
+      </form>
+      <div id="contact-result" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Prototype statique — données locales depuis `data/`</p>
+  </footer>
+</body>
+</html>

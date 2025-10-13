@@ -1,0 +1,46 @@
+name: Send Contact Email
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Nom de l'expéditeur"
+        required: false
+      email:
+        description: "Email de l'expéditeur"
+        required: false
+      message:
+        description: "Contenu du message"
+        required: false
+
+jobs:
+  send_email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send email using dawidd6/action-send-mail
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_HOST }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PASS }}
+          subject: "Message depuis le site EEADB-Tchirimina"
+          to: ${{ secrets.EMAIL_DESTINATION }}
+          from: "no-reply@eeadb-tchirimina.org"
+          body: |
+            Un nouveau message a été envoyé depuis le formulaire de contact.
+            Détails:
+            - Nom: ${{ github.event.inputs.name || 'non fourni' }}
+            - Email: ${{ github.event.inputs.email || 'non fourni' }}
+            - Message: ${{ github.event.inputs.message || 'non fourni' }}
+
+# Pour déclencher ce workflow depuis un service externe, appeler l'API GitHub
+# : POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
+# avec un token PAT disposant au minimum de scope `repo` (ou `workflows` selon la politique).
+
+# Notes:
+# - Ajouter les secrets SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS et EMAIL_DESTINATION dans les GitHub Secrets du dépôt.
+# - Déclencher manuellement via l'onglet 'Actions' > 'Send Contact Email' ou via un dispatch depuis l'application backend.

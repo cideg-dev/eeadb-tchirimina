@@ -1,0 +1,28 @@
+name: Deploy site to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          publish_branch: gh-pages
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+
+# Notes:
+# - Le workflow déploie automatiquement le contenu du dossier `site/` sur la branche `gh-pages`.
+# - GitHub Pages peut être configuré pour utiliser la branche `gh-pages` comme source (Settings > Pages).
