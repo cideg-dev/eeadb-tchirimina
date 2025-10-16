@@ -34,28 +34,41 @@ Le code est dans `serverless/admin_update.js` (Express). Déployez-le sur la pla
 
 ## Spécification de l’API
 
-URL: `POST /admin/update`
+Deux modes sont disponibles:
 
-Body JSON:
-```
-{
-  "updates": [
-    {
-      "path": "site/data/presentation.json",
-      "content": "{ ... }",
-      "message": "admin: update presentation"
-    }
-  ]
-}
-```
+1) Commit direct (simple)
+   - URL: `POST /admin/update`
+   - Body JSON:
+   ```
+   {
+     "updates": [
+       {
+         "path": "site/data/presentation.json",
+         "content": "{ ... }",
+         "message": "admin: update presentation"
+       }
+     ]
+   }
+   ```
+   - Réponse:
+   ```
+   {
+     "ok": true,
+     "results": [ { "path": "...", "ok": true, "commit": "<sha>" } ]
+   }
+   ```
 
-Réponse:
-```
-{
-  "ok": true,
-  "results": [ { "path": "...", "ok": true, "commit": "<sha>" } ]
-}
-```
+2) Mode Pull Request (recommandé)
+   - URL: `POST /admin/update_pr`
+   - Crée une branche `admin/update-<horodatage>` à partir de `main` (ou `GITHUB_BRANCH`), push les modifications sur cette branche via l’API Contents, puis ouvre une Pull Request vers la base.
+   - Réponse:
+   ```
+   {
+     "ok": true,
+     "results": [ { "path": "...", "ok": true, "commit": "<sha>" } ],
+     "pr": { "number": 123, "url": "https://github.com/<owner>/<repo>/pull/123" }
+   }
+   ```
 
 Endpoint santé (optionnel): `GET /health`
 
@@ -71,12 +84,13 @@ Endpoint santé (optionnel): `GET /health`
 - Utiliser des messages de commit explicites (inclus par le frontend) avec l’initiateur.
 - Option: écrire un fichier `docs/admin_logs.md` avec date/heure et résumé (via un deuxième update).
 
-## Mode PR (optionnel)
+## Configuration du mode PR
 
-Pour plus de contrôle, remplacez le commit direct par un **pull request**:
+Variables d’environnement:
 
-1. Le service crée une branche `admin/update-<horodatage>`.
-2. Écrit les fichiers.
-3. Ouvre une PR vers `main`.
+- `ADMIN_PR_DRAFT`: `true` pour créer la PR en mode brouillon (par défaut `true`).
 
-Cela permet la relecture avant fusion. Ce mode nécessite des API GitHub supplémentaires (branches & PRs).
+Politique suggérée:
+
+- Utilisez des labels “admin-update” sur les PR (peut être ajouté plus tard).
+- Ajoutez des reviewers (équipe technique/responsables) pour validation.
