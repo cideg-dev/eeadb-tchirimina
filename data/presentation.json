@@ -1,0 +1,19 @@
+{
+  "mission": "Annoncer tout l’Évangile et servir la communauté à Tchirimina.",
+  "valeurs": [
+    "Foi en Jésus-Christ",
+    "Amour et service",
+    "Intégrité et responsabilité",
+    "Prière et enseignement biblique"
+  ],
+  "histoire": [
+    "Fondée pour rassembler et édifier, l’église EEADB Tchirimina poursuit sa mission dans le quartier Tchirimina.",
+    "Le temple BERACA est un lieu d’adoration, de formation et de soutien fraternel."
+  ],
+  "ministeres": [
+    { "nom": "Pastoral", "responsable": "À préciser", "description": "Accompagnement spirituel et enseignement." },
+    { "nom": "Louange", "responsable": "À préciser", "description": "Conduite de l’adoration et chorale." },
+    { "nom": "Jeunesse", "responsable": "À préciser", "description": "Encadrement des jeunes et activités dédiées." },
+    { "nom": "Accueil", "responsable": "À préciser", "description": "Orientation des nouveaux et informations." }
+  ]
+}

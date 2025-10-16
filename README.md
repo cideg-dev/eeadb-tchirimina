@@ -9,3 +9,4 @@ Ce dossier contient un prototype statique minimal pour le site EEADB-Tchirimina.
 
 - Pour tester localement, servir le dossier racine (`e:/BERACA`) via un serveur (ex : `python -m http.server` ou équivalent) car les navigateurs bloquent `fetch` sur fichiers locaux.
 - Le formulaire de contact est un template : voir `docs/smtp_github_actions.md` pour lier un backend ou un workflow GitHub sécurisé.
+ - Placez le fichier du logo dans `site/assets/logo-ad.png` (format PNG/SVG recommandé) ; l’en-tête l’affiche automatiquement.

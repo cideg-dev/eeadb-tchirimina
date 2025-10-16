@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Zone privée EEADB Tchirimina - accès restreint pour responsables et membres.">
+  <meta name="theme-color" content="#1e3a8a">
+  <title>Zone privée - EEADB Tchirimina</title>
+  <link rel="stylesheet" href="./assets/main.css">
+  <link rel="icon" href="./assets/logo-ad.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <script defer src="./assets/prive.js"></script>
+</head>
+<body>
+  <header>
+    <div class="logo-title">
+      <img src="./assets/logo-ad.png" alt="Logo EEADB">
+      <h1>EEADB Tchirimina</h1>
+    </div>
+    <nav class="nav">
+      <a href="./index.html">Accueil</a>
+      <a href="./presentation.html">Présentation</a>
+      <a href="./activites.html">Activités & Horaires</a>
+      <a href="./galerie.html">Galerie</a>
+      <a href="./ressources.html">Ressources</a>
+      <a href="./contact.html">Contact</a>
+      <a href="./prive.html" aria-current="page">Zone privée</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h2><i class="fa-solid fa-lock"></i> Zone privée</h2>
+    <p>Accès réservé aux responsables. Déverrouillez l’espace pour accéder aux outils d’administration.</p>
+
+    <div class="card">
+      <h3><i class="fa-solid fa-user-lock"></i> Déverrouillage administrateur</h3>
+      <p>Renseignez la clé d’administration (API Key) et l’URL du service de mise à jour sécurisé.</p>
+      <label>URL endpoint admin (serverless)<br><input id="pr-endpoint" placeholder="https://votre-service/admin/update"></label>
+      <label>Clé d’administration (X-API-KEY)<br><input id="pr-key" placeholder="Votre clé" type="password"></label>
+      <button id="pr-unlock" class="button"><i class="fa-solid fa-unlock-keyhole"></i> Déverrouiller</button>
+      <div id="pr-status" class="tag" aria-live="polite"></div>
+    </div>
+
+    <section id="admin-links" class="card" hidden>
+      <h3><i class="fa-solid fa-screwdriver-wrench"></i> Liens d’administration</h3>
+      <ul>
+        <li><a href="./admin.html"><i class="fa-solid fa-sliders"></i> Page de mise à jour (admin)</a></li>
+      </ul>
+      <small>Conseil sécurité: ne partagez jamais la clé, conservez-la dans un gestionnaire de mots de passe.</small>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 EEADB Tchirimina — Assemblées de Dieu</p>
+  </footer>
+</body>
+</html>
