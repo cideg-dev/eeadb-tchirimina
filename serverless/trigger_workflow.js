@@ -18,7 +18,13 @@ if(!GH_TOKEN || !OWNER || !REPO){
 
 app.post('/trigger-email', async (req, res) =>{
   try{
-    const { name, email, message } = req.body;
+    // Vérification optionnelle d'une API key
+    const REQUIRED_KEY = process.env.API_KEY;
+    if(REQUIRED_KEY && req.headers['x-api-key'] !== REQUIRED_KEY){
+      return res.status(401).json({ error: 'unauthorized' });
+    }
+
+    const { name, email, message, type } = req.body;
     // validation basique
     if(!message || !email){
       return res.status(400).json({ error: 'email et message requis' });
@@ -27,7 +33,7 @@ app.post('/trigger-email', async (req, res) =>{
     const url = `https://api.github.com/repos/${OWNER}/${REPO}/actions/workflows/${WORKFLOW_FILE}/dispatches`;
     const body = {
       ref: 'main',
-      inputs: { name: name || '', email: email || '', message: message || '' }
+      inputs: { name: name || '', email: email || '', message: message || '', type: type || 'general' }
     };
 
     const resp = await fetch(url,{

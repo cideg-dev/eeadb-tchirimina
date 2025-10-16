@@ -9,6 +9,9 @@ on:
       email:
         description: "Email de l'expéditeur"
         required: false
+      type:
+        description: "Type de message (general|priere)"
+        required: false
       message:
         description: "Contenu du message"
         required: false
@@ -35,6 +38,7 @@ jobs:
             Détails:
             - Nom: ${{ github.event.inputs.name || 'non fourni' }}
             - Email: ${{ github.event.inputs.email || 'non fourni' }}
+            - Type: ${{ github.event.inputs.type || 'general' }}
             - Message: ${{ github.event.inputs.message || 'non fourni' }}
 
 # Pour déclencher ce workflow depuis un service externe, appeler l'API GitHub

@@ -1,0 +1,34 @@
+name: Mise à jour du verset du jour
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: '0 5 * * *' # Tous les jours à 05:00 UTC (~07:00 Africa/Brazzaville)
+  workflow_dispatch: {}
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Mettre à jour le verset du jour
+        run: node scripts/update_verse.js
+
+      - name: Commit et push des changements
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add site/data/verset_du_jour.json
+          git commit -m "chore: update verset du jour"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

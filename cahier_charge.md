@@ -7,7 +7,7 @@
 - **Devise** : « Avec Dieu nous ferons des exploits »
 - **Verset clé** : Malachie 3:10
 - **Logo** : Oui, logo officiel des AD (à intégrer dans l’en-tête du site)
-- **Couleur principale** : Non définie pour l’instant
+ - **Couleur principale** : Bleu foncé (#1e3a8a)
 
 ## 2. Objectifs du site
 - Présenter l’église et ses valeurs

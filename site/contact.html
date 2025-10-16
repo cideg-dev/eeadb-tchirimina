@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EEADB-Tchirimina — Contact</title>
+  <meta name="theme-color" content="#1e3a8a" />
+  <link href="assets/main.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <script defer src="assets/main.js"></script>
+</head>
+<body>
+  <header>
+    <img src="assets/logo-ad.png" alt="Logo des Assemblées de Dieu" class="logo" />
+    <div>
+      <h1>EEADB-Tchirimina</h1>
+      <p class="tag">Temple BERACA — "Avec Dieu nous ferons des exploits"</p>
+    </div>
+  </header>
+  <nav class="top-nav">
+    <a href="index.html"><i class="fa-solid fa-house"></i> Accueil</a>
+    <a href="presentation.html"><i class="fa-solid fa-church"></i> Présentation</a>
+    <a href="activites.html"><i class="fa-solid fa-clock"></i> Activités & horaires</a>
+    <a href="galerie.html"><i class="fa-solid fa-images"></i> Galerie photo</a>
+    <a href="ressources.html"><i class="fa-solid fa-folder-open"></i> Ressources</a>
+    <a href="contact.html" class="active"><i class="fa-solid fa-envelope"></i> Contact</a>
+    <a href="prive.html"><i class="fa-solid fa-lock"></i> Zone privée</a>
+  </nav>
+  <main>
+    <section id="contact">
+      <h2>Nous écrire</h2>
+      <p class="tag">Pour l’envoi réel, renseignez l’URL de l’endpoint serverless, puis cliquez sur « Envoyer ».</p>
+      <label class="dev-input">URL endpoint serverless<br><input id="endpoint-url" placeholder="https://your-server.com/trigger-email"></label>
+      <br>
+      <form id="contact-form">
+        <label>Nom<br><input name="name" required></label><br>
+        <label>Email<br><input name="email" type="email" required></label><br>
+        <label>Type de message<br>
+          <select name="type">
+            <option value="general">Message général</option>
+            <option value="priere">Demande de prière</option>
+          </select>
+        </label><br>
+        <label>Message<br><textarea name="message" required></textarea></label><br>
+        <button type="submit">Envoyer</button>
+      </form>
+      <div id="contact-result" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+  <footer>
+    <p>EEADB-Tchirimina — Contact</p>
+  </footer>
+</body>
+</html>

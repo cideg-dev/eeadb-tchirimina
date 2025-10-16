@@ -1,0 +1,6 @@
+[
+  { "titre": "Culte du dimanche", "jour": "Dimanche", "heure": "10h00 – 12h00" },
+  { "titre": "Étude biblique", "jour": "Mercredi", "heure": "18h00 – 19h30" },
+  { "titre": "Réunion de prière", "jour": "Vendredi", "heure": "18h00 – 19h30" },
+  { "titre": "Chorale", "jour": "Samedi", "heure": "16h00 – 18h00" }
+]

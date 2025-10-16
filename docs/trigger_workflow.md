@@ -17,12 +17,13 @@ Ce document explique comment déployer une petite fonction serverless qui reçoi
 ## Endpoint
 
 - POST `/trigger-email`
-- Payload JSON attendu : { "name":"...", "email":"...", "message":"..." }
+- Payload JSON attendu : { "name":"...", "email":"...", "message":"...", "type":"general|priere" }
+- Sécurisation (optionnelle mais recommandée) : envoyer l'en-tête `X-API-KEY: <votre_clef>` si `API_KEY` est défini côté serveur.
 
 ## Sécurité
 
 - Valider et nettoyer les entrées côté serveur.
-- Protéger l'endpoint : ajouter un token d'API (ex : `X-API-KEY`) ou autre mécanisme d'authentification pour éviter les abus.
+- Protéger l'endpoint : ajouter un token d'API (ex : `X-API-KEY`) ou autre mécanisme d'authentification pour éviter les abus. Le code d'exemple supporte `API_KEY`.
 - Mettre en place un rate-limit (ex : 10 requêtes/minute par IP) et un captcha côté frontend si nécessaire.
 
 ## Notes
