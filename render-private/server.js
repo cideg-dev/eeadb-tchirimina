@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 // Configure session
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'change_this_secret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
 }));
@@ -19,14 +19,21 @@ app.use(passport.session());
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
+// Liste des utilisateurs autorisés (depuis les variables d'environnement)
+const authorizedUsers = (process.env.AUTHORIZED_USERS || '').split(',');
+
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: process.env.GITHUB_CALLBACK_URL || 'http://localhost:3000/auth/github/callback'
   },
   function(accessToken, refreshToken, profile, done) {
-    // Optionnel : filtrer les utilisateurs autorisés ici
-    return done(null, profile);
+    // Filtrer les utilisateurs autorisés
+    if (authorizedUsers.includes(profile.username)) {
+      return done(null, profile);
+    } else {
+      return done(null, false, { message: 'Utilisateur non autorisé' });
+    }
   }
 ));
 
