@@ -15,7 +15,35 @@ Ce dossier contient le serveur Node.js/Express pour la zone privée du site EEAD
    - `GITHUB_CLIENT_SECRET` : secret de l’application OAuth GitHub
    - `GITHUB_CALLBACK_URL` : URL de callback (ex : `https://eeadb-prive.onrender.com/auth/github/callback`)
    - `SESSION_SECRET` : secret de session (générer une valeur forte)
-4. Lancez le déploiement
+
+## Restreindre l'accès par utilisateur GitHub
+
+Vous pouvez limiter l'accès à une liste d'utilisateurs GitHub en définissant la variable d'environnement `ALLOWED_USERS` (séparateur `,`).
+Exemple :
+
+```
+ALLOWED_USERS=ekue,alice,bob
+```
+
+Les utilisateurs non listés seront refusés lors de l'authentification.
+
+## Autoriser les origines (CORS)
+
+Si votre site public (GitHub Pages) doit appeler l'API privée, définissez la variable `ALLOWED_ORIGINS` avec la liste des origines autorisées (séparées par des virgules). Exemple :
+
+```env
+ALLOWED_ORIGINS=https://cideg-dev.github.io
+```
+
+Si `ALLOWED_ORIGINS` est vide, le serveur acceptera toutes les origines (`*`).
+
+## Fichiers privés
+
+Placez les fichiers privés dans le dossier `render-private/private/`. Ils seront accessibles seulement après authentification via l'URL :
+
+```
+https://<votre-service>.onrender.com/private/<nom-de-fichier.pdf>
+```
 
 ## Création de l’application OAuth GitHub
 - Allez sur https://github.com/settings/developers > New OAuth App
