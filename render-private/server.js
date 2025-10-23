@@ -69,6 +69,11 @@ app.get('/fichier-confidentiel', ensureAuthenticated, (req, res) => {
   res.send('Contenu confidentiel réservé aux membres authentifiés.');
 });
 
+// Health check public (sans authentification) pour Render
+app.get('/health', (req, res) => {
+  res.status(200).send('ok');
+});
+
 app.listen(PORT, () => {
   console.log(`Serveur privé EEADB lancé sur le port ${PORT}`);
 });
