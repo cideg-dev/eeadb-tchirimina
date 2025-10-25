@@ -10,6 +10,7 @@ services:
     plan: free # ou 'starter' etc, selon vos besoins
     buildCommand: "npm install"
     startCommand: "npm start"
+    healthCheckPath: "/health"
     envVars:
       - key: NODE_VERSION
         value: 20.x

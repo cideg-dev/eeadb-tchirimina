@@ -105,6 +105,11 @@ app.get('/private/:filename', ensureAuthenticated, (req, res) => {
   res.download(filePath);
 });
 
+// Health check public (sans authentification) pour Render
+app.get('/health', (req, res) => {
+  res.status(200).send('ok');
+});
+
 app.listen(PORT, () => {
   console.log(`Serveur privé EEADB lancé sur le port ${PORT}`);
 });
