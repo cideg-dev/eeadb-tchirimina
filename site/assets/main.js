@@ -71,8 +71,71 @@ document.addEventListener('DOMContentLoaded', async function(){
       }
     });
     calendar.render();
+    
+    // Charger les événements en vedette
+    loadFeaturedEvents(events);
   }catch(e){
     document.getElementById('calendar').textContent = 'Impossible de charger le calendrier.';
+  }
+
+  // Fonction pour charger les événements en vedette
+  function loadFeaturedEvents(events) {
+    const container = document.getElementById('featured-events-container');
+    if (!container) return;
+    
+    // Filtrer les événements futurs (prochains 30 jours)
+    const now = new Date();
+    const futureDate = new Date();
+    futureDate.setDate(now.getDate() + 30);
+    
+    const upcomingEvents = events.filter(event => {
+      const eventDate = new Date(event.start);
+      return eventDate >= now && eventDate <= futureDate;
+    });
+    
+    // Trier par date et prendre les 3 premiers
+    upcomingEvents.sort((a, b) => new Date(a.start) - new Date(b.start));
+    const featuredEvents = upcomingEvents.slice(0, 3);
+    
+    if (featuredEvents.length === 0) {
+      container.innerHTML = `
+        <div class="event-card">
+          <div class="event-date">
+            <i class="fa-solid fa-calendar-plus"></i>
+          </div>
+          <div class="event-info">
+            <h3>Aucun événement prévu</h3>
+            <p>Revenez bientôt pour découvrir nos prochains événements</p>
+          </div>
+        </div>
+      `;
+      return;
+    }
+    
+    // Générer les cartes d'événements
+    container.innerHTML = featuredEvents.map(event => {
+      const eventDate = new Date(event.start);
+      const day = eventDate.getDate();
+      const month = eventDate.toLocaleDateString('fr-FR', { month: 'short' });
+      const time = eventDate.toLocaleTimeString('fr-FR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+      
+      return `
+        <div class="event-card">
+          <div class="event-date">
+            <span class="day">${day}</span>
+            <span class="month">${month}</span>
+          </div>
+          <div class="event-info">
+            <h3>${event.title}</h3>
+            <p class="event-time">${time} - ${eventDate.toLocaleDateString('fr-FR')}</p>
+            <p class="event-location">${event.location || 'Temple BERACA'}</p>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 
   // Contact form (front-end simulation)
