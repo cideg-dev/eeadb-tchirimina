@@ -31,3 +31,40 @@ button:hover{background:#16306c}
 .resource-item{border:1px solid #eee;border-radius:6px;padding:0.6rem;display:flex;align-items:center;gap:0.5rem}
 .resource-item .title{font-weight:600}
 .resource-item .meta{color:var(--muted)}
+
+/* Sections d'accueil */
+#welcome{background:#f8f9ff;padding:1.5rem;border-radius:var(--radius);border-left:4px solid var(--accent)}
+#welcome h2{color:var(--accent);margin-top:0}
+
+.welcome-cards{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:1.5rem}
+.welcome-card{background:#fff;padding:1.5rem;border-radius:var(--radius);text-align:center;box-shadow:var(--shadow);border:1px solid #eee}
+.welcome-card i{font-size:2rem;color:var(--accent);margin-bottom:1rem;display:block}
+.welcome-card h3{margin:0.5rem 0;color:var(--accent)}
+.welcome-card p{margin:0;color:var(--muted)}
+
+/* Section des horaires */
+#horaires{margin:2rem 0}
+.schedule-grid{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:1.5rem}
+.schedule-card{background:#fff;padding:1.5rem;border-radius:var(--radius);text-align:center;box-shadow:var(--shadow);border:1px solid #eee}
+.schedule-card i{font-size:2rem;color:var(--accent);margin-bottom:1rem;display:block}
+.schedule-card h3{margin:0.5rem 0;color:var(--accent)}
+.schedule-time{font-weight:600;color:var(--accent);margin:0.5rem 0}
+.schedule-card p{margin:0;color:var(--muted)}
+
+/* Section de présentation */
+#presentation{background:#fff;padding:1.5rem;border-radius:var(--radius);border:1px solid #eee;margin:2rem 0}
+.church-values{margin-top:1.5rem}
+.church-values h3{color:var(--accent);margin-bottom:1rem}
+.church-values ul{list-style:none;padding:0;margin:0}
+.church-values li{padding:0.5rem 0;border-bottom:1px solid #f0f0f0}
+.church-values li:last-child{border-bottom:none}
+
+/* Responsive design pour écrans plus larges */
+@media(min-width:768px){
+  .welcome-cards{grid-template-columns:repeat(3,1fr)}
+  .schedule-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(min-width:1024px){
+  .schedule-grid{grid-template-columns:repeat(4,1fr)}
+}

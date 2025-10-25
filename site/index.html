@@ -13,16 +13,102 @@
   <script defer src="assets/main.js"></script>
 </head>
 <body class="preload">
-  <header id="main-header" class="main-header"></header>
-  <nav id="main-nav" class="top-nav"></nav>
-
-  <nav>
-    <a href="index.html">Accueil</a> |
-    <a href="presentation.html">Présentation</a> |
-    <a href="https://eeadb-prive.onrender.com/" target="_blank" rel="noopener">Zone privée</a>
+  <header id="main-header" class="main-header">
+    <img src="assets/logo-ad.png" alt="Logo EEADB-Tchirimina" class="logo">
+    <div>
+      <h1>EEADB-Tchirimina</h1>
+      <p class="tag">« Avec Dieu nous ferons des exploits »</p>
+    </div>
+  </header>
+  
+  <nav id="main-nav" class="top-nav">
+    <a href="index.html" class="active"><i class="fa-solid fa-house"></i> Accueil</a>
+    <a href="presentation.html"><i class="fa-solid fa-church"></i> Présentation</a>
+    <a href="activites.html"><i class="fa-solid fa-calendar-days"></i> Activités</a>
+    <a href="galerie.html"><i class="fa-solid fa-images"></i> Galerie</a>
+    <a href="ressources.html"><i class="fa-solid fa-book"></i> Ressources</a>
+    <a href="contact.html"><i class="fa-solid fa-envelope"></i> Contact</a>
+    <a href="https://eeadb-prive.onrender.com/" target="_blank" rel="noopener"><i class="fa-solid fa-lock"></i> Zone privée</a>
   </nav>
 
   <main>
+    <!-- Section d'accueil pour nouveaux visiteurs -->
+    <section id="welcome">
+      <h2>Bienvenue à l'EEADB-Tchirimina</h2>
+      <p>Nous sommes heureux de vous accueillir dans notre communauté chrétienne. Que vous soyez de passage ou que vous cherchiez une église familiale, vous êtes le bienvenu parmi nous.</p>
+      
+      <div class="welcome-cards">
+        <div class="welcome-card">
+          <i class="fa-solid fa-hands-praying"></i>
+          <h3>Cultes dynamiques</h3>
+          <p>Venez vivre des moments de louange, d'adoration et d'enseignement biblique.</p>
+        </div>
+        
+        <div class="welcome-card">
+          <i class="fa-solid fa-people-group"></i>
+          <h3>Communauté chaleureuse</h3>
+          <p>Rejoignez une famille spirituelle où chacun trouve sa place.</p>
+        </div>
+        
+        <div class="welcome-card">
+          <i class="fa-solid fa-heart"></i>
+          <h3>Accueil personnalisé</h3>
+          <p>Notre équipe est là pour vous accompagner dans votre découverte de l'église.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section des horaires des cultes -->
+    <section id="horaires">
+      <h2>Horaires des Cultes</h2>
+      
+      <div class="schedule-grid">
+        <div class="schedule-card">
+          <i class="fa-solid fa-sun"></i>
+          <h3>Culte du Dimanche</h3>
+          <p class="schedule-time">09h00 - 12h00</p>
+          <p>Culte principal avec sainte cène</p>
+        </div>
+        
+        <div class="schedule-card">
+          <i class="fa-solid fa-moon"></i>
+          <h3>Réunion de Prière</h3>
+          <p class="schedule-time">Mercredi 18h30 - 20h00</p>
+          <p>Moment de prière et d'intercession</p>
+        </div>
+        
+        <div class="schedule-card">
+          <i class="fa-solid fa-book-bible"></i>
+          <h3>École du Dimanche</h3>
+          <p class="schedule-time">Dimanche 08h30 - 09h30</p>
+          <p>Enseignement pour enfants et adolescents</p>
+        </div>
+        
+        <div class="schedule-card">
+          <i class="fa-solid fa-people-roof"></i>
+          <h3>Groupes de Maison</h3>
+          <p class="schedule-time">Vendredi 19h00</p>
+          <p>Communion fraternelle par quartier</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section de présentation de l'église -->
+    <section id="presentation">
+      <h2>Notre Église</h2>
+      <p>L'Église Évangélique des Assemblées de Dieu du Bénin - Tchirimina (Temple BERACA) est une communauté chrétienne engagée dans l'évangélisation, la formation des disciples et le service dans l'amour.</p>
+      
+      <div class="church-values">
+        <h3>Nos valeurs</h3>
+        <ul>
+          <li><strong>Foi</strong> - Vivre une relation authentique avec Dieu</li>
+          <li><strong>Amour</strong> - Servir notre prochain avec compassion</li>
+          <li><strong>Espérance</strong> - Partager la bonne nouvelle de Jésus-Christ</li>
+          <li><strong>Communion</strong> - Grandir ensemble dans la foi</li>
+        </ul>
+      </div>
+    </section>
+
     <section id="verset">
       <h2>Verset du jour</h2>
       <blockquote id="verset-text">Chargement...</blockquote>
