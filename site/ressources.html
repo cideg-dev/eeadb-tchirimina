@@ -16,6 +16,18 @@
   <main>
     <section>
       <h2>Ressources à télécharger</h2>
+      <div class="resource-filters">
+        <input type="search" id="resource-search" placeholder="Rechercher..." aria-label="Rechercher une ressource">
+        <select id="resource-type" aria-label="Filtrer par type">
+          <option value="">Tous les types</option>
+          <option value="pdf">PDF</option>
+          <option value="audio">Audio</option>
+        </select>
+        <select id="resource-year" aria-label="Filtrer par année">
+          <option value="">Toutes les années</option>
+          <!-- options dynamiques ajoutées par JS -->
+        </select>
+      </div>
       <ul id="resources" class="resource-list" aria-live="polite">Chargement des ressources...</ul>
       <p class="tag">Organisation recommandée par thème ou date. Voir <code>docs/galerie_calendrier.md</code>.</p>
     </section>

@@ -638,3 +638,10 @@ form#contact-form button:hover:not([disabled]) {
 /* Améliorations des cartes de la galerie */
 .gallery-card{cursor:pointer;transition:transform 0.2s,box-shadow 0.2s}
 .gallery-card:hover{transform:translateY(-4px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+
+/* Filtres ressources */
+.resource-filters{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem}
+.resource-filters input[type="search"],
+.resource-filters select{padding:0.4rem 0.6rem;border:1px solid #ccc;border-radius:6px;font-size:0.9rem}
+.resource-filters select{min-width:140px}
+.resources-count{display:block;margin-bottom:0.5rem;color:var(--muted);font-size:0.9rem}
