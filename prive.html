@@ -26,9 +26,14 @@
       <label>URL endpoint admin (serverless)<br><input id="pr-endpoint" placeholder="https://votre-service/admin/update"></label>
       <label>Clé d’administration (X-API-KEY)<br><input id="pr-key" placeholder="Votre clé" type="password"></label>
       <button id="pr-unlock" class="button"><i class="fa-solid fa-unlock-keyhole"></i> Déverrouiller</button>
+      <button id="pr-logout" class="button secondary" hidden><i class="fa-solid fa-lock"></i> Se déconnecter</button>
       <div id="pr-status" class="tag" aria-live="polite"></div>
     </div>
 
+    <section id="access-log" class="card" hidden>
+      <h3><i class="fa-solid fa-list-check"></i> Journal d’accès</h3>
+      <ul id="access-log-list"></ul>
+    </section>
     <section id="admin-links" class="card" hidden>
       <h3><i class="fa-solid fa-screwdriver-wrench"></i> Liens d’administration</h3>
       <ul>
