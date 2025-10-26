@@ -363,6 +363,50 @@ button:hover{background:#16306c}
 }
 
 /* Styles pour la page d'activités et horaires */
+
+/* ====== Formulaire de contact ====== */
+form#contact-form {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+form#contact-form input,
+form#contact-form textarea,
+form#contact-form select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+form#contact-form button[type="submit"] {
+  align-self: flex-end;
+  background: #1e3a8a;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+form#contact-form button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+form#contact-form button:hover:not([disabled]) {
+  background:#0f2566;
+}
+
+/* Messages de statut */
+.form-msg {
+  margin-top: 1rem;
+  font-weight: 500;
+}
+.msg-success { color: #15803d; }
+.msg-error { color: #b91c1c; }
+.msg-info { color: #0c4a6e; }
 .activites-container {
   max-width: 1200px;
   margin: 0 auto;
