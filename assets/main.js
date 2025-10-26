@@ -141,14 +141,48 @@ document.addEventListener('DOMContentLoaded', async function(){
   // Contact form (front-end simulation)
   const form = document.getElementById('contact-form');
   if(form){
+    const status = document.getElementById('contact-result');
+    const endpointInput = document.getElementById('endpoint-url');
+    const submitBtn = form.querySelector('button[type="submit"]');
+  
+    // Fonction utilitaire de validation
+    function validate(data){
+      const errors = [];
+      if(!data.name || data.name.trim().length < 2){
+        errors.push('Le nom doit contenir au moins 2 caractères.');
+      }
+      if(!data.email || !/^\S+@\S+\.\S+$/.test(data.email)){
+        errors.push('Adresse e-mail invalide.');
+      }
+      if(!data.message || data.message.trim().length < 10){
+        errors.push('Le message doit contenir au moins 10 caractères.');
+      }
+      return errors;
+    }
+  
+    function showStatus(msg, type='info'){
+      status.textContent = msg;
+      status.className = '';
+      status.classList.add('form-msg', `msg-${type}`);
+    }
+  
     form.addEventListener('submit', async (ev)=>{
       ev.preventDefault();
       const data = Object.fromEntries(new FormData(form).entries());
-      const status = document.getElementById('contact-result');
-      // Vérifier si une URL d'endpoint est renseignée
-      const endpoint = document.getElementById('endpoint-url')?.value?.trim();
+  
+      // Validation côté client
+      const errors = validate(data);
+      if(errors.length){
+        showStatus(errors.join(' '), 'error');
+        return;
+      }
+  
+      // Désactiver le bouton pour éviter les doubles clics
+      submitBtn.disabled = true;
+      showStatus('Envoi en cours…', 'info');
+  
+      const endpoint = endpointInput?.value?.trim();
       if(endpoint){
-        status.textContent = 'Envoi en cours...';
         try{
           const resp = await fetch(endpoint,{
             method: 'POST',
@@ -157,18 +191,21 @@ document.addEventListener('DOMContentLoaded', async function(){
           });
           const json = await resp.json().catch(()=>null);
           if(resp.ok){
-            status.textContent = 'Message envoyé (dispatch ok).';
+            showStatus('Merci ! Votre message a bien été envoyé.', 'success');
+            form.reset();
           }else{
-            status.textContent = 'Erreur lors de l\'envoi : ' + (json?.error || resp.statusText || resp.status);
+            showStatus('Erreur lors de l\'envoi : ' + (json?.error || resp.statusText || resp.status), 'error');
           }
         }catch(err){
-          status.textContent = 'Erreur réseau : ' + err.message;
+          showStatus('Erreur réseau : ' + err.message, 'error');
         }
-        console.log('Contact form submit', data, '->', endpoint);
       }else{
-        status.textContent = 'Envoi simulé — voir docs pour connecter au workflow.';
+        showStatus('Envoi simulé — configurez l\'endpoint pour un envoi réel.', 'success');
         console.log('Contact form submit (simulé)', data);
+        form.reset();
       }
+  
+      submitBtn.disabled = false;
     });
   }
 });
