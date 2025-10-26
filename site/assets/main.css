@@ -645,3 +645,12 @@ form#contact-form button:hover:not([disabled]) {
 .resource-filters select{padding:0.4rem 0.6rem;border:1px solid #ccc;border-radius:6px;font-size:0.9rem}
 .resource-filters select{min-width:140px}
 .resources-count{display:block;margin-bottom:0.5rem;color:var(--muted);font-size:0.9rem}
+
+/* Boutons secondaires */
+.button.secondary{background-color:#ddd;color:#333;}
+.button.secondary:hover{background-color:#ccc;}
+
+/* Zone privée : journal d’accès */
+#access-log{margin-top:1rem;}
+#access-log-list{max-height:200px;overflow-y:auto;padding-left:1rem;}
+#access-log-list li{list-style:disc;color:#555;font-size:0.9rem;margin-bottom:0.25rem;}
