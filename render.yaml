@@ -1,27 +1,17 @@
-# Fichier de configuration pour Render (Infrastructure as Code)
-
 services:
-  # Un service web pour le backend Node.js
+  # Service web pour le site Next.js
   - type: web
-    name: eeadb-backend-prive # Nom du service sur Render
+    name: eeadb-website
     env: node
-    # Spécifie le répertoire où se trouve le code du backend
-    rootDir: ./render-private
-    plan: free # ou 'starter' etc, selon vos besoins
-    buildCommand: "npm install"
+    region: frankfurt  # ou 'ohio' pour l'Amérique du Nord
+    rootDir: ./eeadb-website
+    plan: free
+    branch: main
+    buildCommand: "npm install && npm run build"
     startCommand: "npm start"
-    healthCheckPath: "/health"
+    healthCheckPath: "/"
     envVars:
       - key: NODE_VERSION
         value: 20.x
-      # --- Variables d'environnement à remplir sur le tableau de bord Render ---
-      - key: GITHUB_CLIENT_ID
-        value: ""
-      - key: GITHUB_CLIENT_SECRET
-        sync: false # Marqué comme secret, ne sera pas visible après la saisie
-      - key: SESSION_SECRET
-        generateValue: true # Demande à Render de générer une valeur aléatoire sécurisée
-      - key: AUTHORIZED_USERS
-        value: "" # Liste des noms d'utilisateurs GitHub, séparés par des virgules
-      - key: GITHUB_CALLBACK_URL
-        value: "" # L'URL de votre service Render + /auth/github/callback
+    domains:
+      - "eeadb-tchirimina.onrender.com"  # Vous pouvez personnaliser cet URL
