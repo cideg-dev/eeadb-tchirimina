@@ -1,0 +1,29 @@
+{
+  "name": "eeadb-website",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@fullcalendar/daygrid": "^6.1.11",
+    "@fullcalendar/react": "^6.1.11",
+    "@fullcalendar/timegrid": "^6.1.11",
+    "autoprefixer": "^10.4.16",
+    "fullcalendar": "^6.1.11",
+    "next": "14.0.4",
+    "postcss": "^8.4.32",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-lazy-load-image-component": "^1.6.3",
+    "tailwindcss": "^3.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "20.10.5",
+    "@types/react": "18.2.45",
+    "@types/react-dom": "18.2.18"
+  }
+}

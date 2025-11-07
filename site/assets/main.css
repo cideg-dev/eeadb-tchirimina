@@ -650,7 +650,186 @@ form#contact-form button:hover:not([disabled]) {
 .button.secondary{background-color:#ddd;color:#333;}
 .button.secondary:hover{background-color:#ccc;}
 
-/* Zone privée : journal d’accès */
+/* Zone privée : journal d'accès */
 #access-log{margin-top:1rem;}
 #access-log-list{max-height:200px;overflow-y:auto;padding-left:1rem;}
 #access-log-list li{list-style:disc;color:#555;font-size:0.9rem;margin-bottom:0.25rem;}
+
+/* Styles améliorés pour la barre de filtres de la galerie */
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  align-items: end;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 250px;
+}
+
+.search-container input[type="search"] {
+  padding: 0.6rem 2.5rem 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  width: 100%;
+  background: white;
+}
+
+.search-container input[type="search"]:focus {
+  outline: none;
+  border-color: #2c5aa0;
+  box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+}
+
+.clear-btn {
+  position: absolute;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #999;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-btn:hover {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.filter-bar label {
+  font-weight: 600;
+  color: #2c5aa0;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  gap: 0.25rem;
+}
+
+.filter-bar select {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  min-width: 140px;
+  font-size: 0.9rem;
+  background: white;
+}
+
+.filter-bar select:focus {
+  outline: none;
+  border-color: #2c5aa0;
+}
+
+.filter-actions {
+  display: flex;
+  align-items: end;
+}
+
+.results-count {
+  margin-top: 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  background: #e8f2ff;
+  border-radius: 12px;
+  border: 1px solid #c5d9f8;
+}
+
+/* Améliorations des cartes de galerie */
+.gallery-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f0f0f0;
+}
+
+.gallery-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: #2c5aa0;
+}
+
+.gallery-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gallery-card:hover img {
+  transform: scale(1.05);
+}
+
+.gallery-card .meta {
+  padding: 1rem;
+}
+
+.gallery-card .meta div:first-child {
+  font-weight: 600;
+  color: #2c5aa0;
+  margin-bottom: 0.25rem;
+}
+
+.gallery-card .meta div:last-child {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* États vides améliorés */
+.empty-gallery {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #666;
+}
+
+.empty-gallery i {
+  font-size: 3rem;
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+.empty-gallery h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Responsive pour les filtres */
+@media (max-width: 768px) {
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .search-container,
+  .filter-bar select {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .filter-actions {
+    justify-content: center;
+  }
+}
