@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getEvents } from '@/lib/dataService';
+import { getEvents } from '../lib/dataService';
 
 const Calendar = ({ events: externalEvents = [] }) => {
   const [view, setView] = useState('dayGridMonth');

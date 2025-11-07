@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getVersetDuJour } from '@/lib/dataService';
+import { getVersetDuJour } from '../lib/dataService';
 
 const VersetJour = ({ versetData }) => {
   const [verset, setVerset] = useState(null);

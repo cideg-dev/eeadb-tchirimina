@@ -1,4 +1,4 @@
-import { getEvents } from '@/lib/dataService';
+import { getEvents } from '../../../lib/dataService';
 
 export async function GET() {
   try {

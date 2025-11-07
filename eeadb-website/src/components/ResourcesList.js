@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getResources } from '@/lib/dataService';
+import { getResources } from '../lib/dataService';
 
 const ResourcesList = ({ resources: externalResources = [] }) => {
   const [resources, setResources] = useState(externalResources);

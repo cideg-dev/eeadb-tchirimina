@@ -1,4 +1,4 @@
-import { getResources } from '@/lib/dataService';
+import { getResources } from '../../../lib/dataService';
 
 export async function GET() {
   try {

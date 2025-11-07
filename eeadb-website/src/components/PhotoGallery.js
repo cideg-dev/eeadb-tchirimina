@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
-import { getPhotos } from '@/lib/dataService';
+import { getPhotos } from '../lib/dataService';
 
 const PhotoGallery = ({ photos: externalPhotos = [], title = "Galerie Photo", description = "Découvrez nos moments de partage et de célébration" }) => {
   const [photos, setPhotos] = useState(externalPhotos);

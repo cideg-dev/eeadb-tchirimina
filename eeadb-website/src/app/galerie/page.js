@@ -1,5 +1,5 @@
-import Layout from '@/components/Layout';
-import PhotoGallery from '@/components/PhotoGallery';
+import Layout from '../../components/Layout';
+import PhotoGallery from '../../components/PhotoGallery';
 
 export default function GaleriePage() {
   return (

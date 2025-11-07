@@ -1,4 +1,4 @@
-import { getVersetDuJour } from '@/lib/dataService';
+import { getVersetDuJour } from '../../../lib/dataService';
 
 export async function GET() {
   try {

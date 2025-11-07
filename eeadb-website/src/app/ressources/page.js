@@ -1,5 +1,5 @@
-import Layout from '@/components/Layout';
-import ResourcesList from '@/components/ResourcesList';
+import Layout from '../../components/Layout';
+import ResourcesList from '../../components/ResourcesList';
 
 export default function RessourcesPage() {
   return (

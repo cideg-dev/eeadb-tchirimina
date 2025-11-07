@@ -1,4 +1,4 @@
-import { getPhotos } from '@/lib/dataService';
+import { getPhotos } from '../../../lib/dataService';
 
 export async function GET() {
   try {

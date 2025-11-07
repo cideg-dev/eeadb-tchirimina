@@ -1,5 +1,5 @@
-import Layout from '@/components/Layout';
-import Calendar from '@/components/Calendar';
+import Layout from '../../components/Layout';
+import Calendar from '../../components/Calendar';
 
 export default function ActivitesPage() {
   return (

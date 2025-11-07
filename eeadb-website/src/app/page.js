@@ -1,8 +1,8 @@
 import Head from 'next/head';
-import Layout from '@/components/Layout';
-import VersetJour from '@/components/VersetJour';
-import Calendar from '@/components/Calendar';
-import PhotoGallery from '@/components/PhotoGallery';
+import Layout from '../components/Layout';
+import VersetJour from '../components/VersetJour';
+import Calendar from '../components/Calendar';
+import PhotoGallery from '../components/PhotoGallery';
 
 export default function Home() {
   return (
