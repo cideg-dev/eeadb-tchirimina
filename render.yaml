@@ -13,5 +13,14 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 20.x
+      # Variables d'authentification admin
+      - key: ADMIN_EMAIL
+        value: "admin@eeadb-tchirimina.com"  # Remplacez par votre email
+      - key: ADMIN_PASSWORD
+        value: ""  # Mettez votre mot de passe ici, marqué comme secret
+        sync: false
+      # Variable pour Google Analytics (optionnelle)
+      - key: NEXT_PUBLIC_GA_MEASUREMENT_ID
+        value: "G-XXXXXXXXXX"  # Remplacez par votre ID Google Analytics
     domains:
       - "eeadb-tchirimina.onrender.com"  # Vous pouvez personnaliser cet URL
