@@ -14,7 +14,7 @@
     "@fullcalendar/timegrid": "^6.1.11",
     "autoprefixer": "^10.4.16",
     "fullcalendar": "^6.1.11",
-    "next": "14.0.4",
+    "next": "^14.2.33",
     "postcss": "^8.4.32",
     "react": "18.2.0",
     "react-dom": "18.2.0",
