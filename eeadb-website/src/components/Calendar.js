@@ -8,7 +8,9 @@ const Calendar = ({ events: externalEvents = [] }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isCalendarReady, setIsCalendarReady] = useState(false);
   const calendarRef = useRef(null);
+  const [activeButton, setActiveButton] = useState(view);
 
   // Charger les événements depuis le service de données
   useEffect(() => {
@@ -35,7 +37,7 @@ const Calendar = ({ events: externalEvents = [] }) => {
 
   // Initialiser le calendrier FullCalendar après le rendu du composant
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.FullCalendar && calendarRef.current) {
+    if (typeof window !== 'undefined' && window.FullCalendar && calendarRef.current && !isCalendarReady) {
       // Import dynamique de FullCalendar pour éviter les erreurs de serveur
       const initializeCalendar = async () => {
         const { Calendar } = await import('@fullcalendar/core');
@@ -69,66 +71,75 @@ const Calendar = ({ events: externalEvents = [] }) => {
             });
           },
           // Utiliser les icônes FontAwesome pour les boutons
-          buttonIcons: {
-            prev: 'fa-solid fa-chevron-left',
-            next: 'fa-solid fa-chevron-right',
-            prevYear: 'fa-solid fa-angles-left',
-            nextYear: 'fa-solid fa-angles-right'
-          },
+          buttonIcons: false, // Désactiver les icônes pour utiliser les labels
           buttonText: {
             today: 'Aujourd\'hui',
             month: 'Mois',
             week: 'Semaine',
             day: 'Jour'
-          }
+          },
+          // Thème personnalisé
+          themeSystem: 'standard'
         });
 
         calendarInstance.render();
+        setIsCalendarReady(true);
 
         // Nettoyer l'instance du calendrier lors du démontage
         return () => {
           calendarInstance.destroy();
+          setIsCalendarReady(false);
         };
       };
 
       initializeCalendar();
     }
-  }, [calendarEvents, view]);
+  }, [calendarEvents, view, isCalendarReady]);
 
   const handleViewChange = (newView) => {
     setView(newView);
+    setActiveButton(newView);
+    
+    // Mettre à jour le calendrier si déjà initialisé
+    if (typeof window !== 'undefined' && window.FullCalendar && calendarRef.current && isCalendarReady) {
+      const { Calendar } = window.FullCalendar;
+      const calendarInstance = Calendar.getCalendar(calendarRef.current);
+      if (calendarInstance) {
+        calendarInstance.changeView(newView);
+      }
+    }
   };
 
   return (
-    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-eeadb-blue mb-4 md:mb-0">Calendrier des événements</h2>
-        <div className="flex gap-2">
+    <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-eeadb-blue mb-4 md:mb-0">Calendrier des événements</h2>
+        <div className="flex gap-2 flex-wrap justify-center">
           <button
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              view === 'dayGridMonth'
-                ? 'bg-eeadb-blue text-white'
-                : 'bg-white text-eeadb-blue border border-eeadb-blue hover:bg-eeadb-blue hover:text-white'
+            className={`px-5 py-2.5 rounded-xl transition-all duration-300 transform hover:scale-105 ${
+              activeButton === 'dayGridMonth'
+                ? 'bg-gradient-to-r from-eeadb-blue-600 to-eeadb-blue-700 text-white shadow-lg'
+                : 'bg-white text-eeadb-blue-700 border border-eeadb-blue-200 hover:bg-eeadb-blue-50'
             }`}
             onClick={() => handleViewChange('dayGridMonth')}
           >
             <i className="fas fa-calendar-days mr-2"></i>Mois
           </button>
           <button
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              view === 'timeGridWeek'
-                ? 'bg-eeadb-blue text-white'
-                : 'bg-white text-eeadb-blue border border-eeadb-blue hover:bg-eeadb-blue hover:text-white'
+            className={`px-5 py-2.5 rounded-xl transition-all duration-300 transform hover:scale-105 ${
+              activeButton === 'timeGridWeek'
+                ? 'bg-gradient-to-r from-eeadb-blue-600 to-eeadb-blue-700 text-white shadow-lg'
+                : 'bg-white text-eeadb-blue-700 border border-eeadb-blue-200 hover:bg-eeadb-blue-50'
             }`}
             onClick={() => handleViewChange('timeGridWeek')}
           >
             <i className="fas fa-calendar-week mr-2"></i>Semaine
           </button>
           <button
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              view === 'timeGridDay'
-                ? 'bg-eeadb-blue text-white'
-                : 'bg-white text-eeadb-blue border border-eeadb-blue hover:bg-eeadb-blue hover:text-white'
+            className={`px-5 py-2.5 rounded-xl transition-all duration-300 transform hover:scale-105 ${
+              activeButton === 'timeGridDay'
+                ? 'bg-gradient-to-r from-eeadb-blue-600 to-eeadb-blue-700 text-white shadow-lg'
+                : 'bg-white text-eeadb-blue-700 border border-eeadb-blue-200 hover:bg-eeadb-blue-50'
             }`}
             onClick={() => handleViewChange('timeGridDay')}
           >
@@ -138,49 +149,59 @@ const Calendar = ({ events: externalEvents = [] }) => {
       </div>
 
       {/* Conteneur pour le calendrier FullCalendar */}
-      <div ref={calendarRef} className="min-h-[500px] bg-white p-4 rounded-lg border border-gray-200" />
+      <div ref={calendarRef} className="min-h-[500px] bg-white p-4 rounded-xl border border-gray-200 shadow-inner" />
       
       {/* Affichage des événements dans une liste comme solution de repli */}
-      {(!calendarRef.current || loading) && (
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold text-eeadb-blue mb-3">Événements à venir</h3>
+      {!isCalendarReady && (
+        <div className="mt-8">
+          <h3 className="text-lg font-semibold text-eeadb-blue mb-4 flex items-center">
+            <i className="fas fa-list mr-2"></i>Événements à venir
+          </h3>
           {loading ? (
             <div className="flex justify-center items-center h-40">
               <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-eeadb-blue"></div>
             </div>
           ) : calendarEvents.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {calendarEvents.map((event, index) => (
                 <div
                   key={event.id || index}
-                  className="bg-white p-4 rounded-lg border border-gray-200 flex items-start hover:shadow-md transition-shadow cursor-pointer"
+                  className="bg-gradient-to-r from-white to-gray-50 p-5 rounded-xl border border-gray-200 flex items-start hover:shadow-md transition-all duration-300 cursor-pointer transform hover:-translate-y-0.5"
                   onClick={() => setSelectedEvent(event)}
                 >
-                  <div className="bg-eeadb-blue text-white p-3 rounded-lg text-center mr-4 min-w-[70px]">
+                  <div className="bg-gradient-to-b from-eeadb-blue-600 to-eeadb-blue-800 text-white p-4 rounded-lg text-center mr-5 min-w-[75px] shadow-md">
                     <div className="text-lg font-bold">{new Date(event.start).getDate()}</div>
-                    <div className="text-xs uppercase">{new Date(event.start).toLocaleDateString('fr-FR', { month: 'short' })}</div>
+                    <div className="text-xs uppercase tracking-wider">{new Date(event.start).toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase()}</div>
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-semibold text-eeadb-blue">{event.title}</h4>
-                    <div className="flex items-center text-sm text-gray-600 mt-1">
-                      <i className="fas fa-clock mr-2"></i>
-                      {new Date(event.start).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} -
-                      {new Date(event.end).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                    <h4 className="font-bold text-lg text-eeadb-blue mb-1">{event.title}</h4>
+                    <div className="flex items-center text-gray-600 mb-1">
+                      <i className="fas fa-clock mr-2 text-eeadb-blue-500"></i>
+                      <span>
+                        {new Date(event.start).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} -
+                        {new Date(event.end).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                      </span>
                     </div>
                     {event.location && (
-                      <div className="flex items-center text-sm text-gray-600 mt-1">
-                        <i className="fas fa-location-dot mr-2"></i>
-                        {event.location}
+                      <div className="flex items-center text-gray-600">
+                        <i className="fas fa-location-dot mr-2 text-eeadb-blue-500"></i>
+                        <span>{event.location}</span>
                       </div>
                     )}
+                  </div>
+                  <div className="ml-4 flex items-center">
+                    <i className="fas fa-chevron-right text-gray-400"></i>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500">
-              <i className="fas fa-calendar-plus text-3xl mb-3"></i>
-              <p>Aucun événement prévu pour le moment</p>
+            <div className="text-center py-12 bg-gray-50 rounded-xl">
+              <div className="inline-block p-4 bg-eeadb-blue-100 rounded-full mb-4">
+                <i className="fas fa-calendar-check text-eeadb-blue-600 text-3xl"></i>
+              </div>
+              <h3 className="text-xl font-medium text-gray-800 mb-2">Aucun événement prévu</h3>
+              <p className="text-gray-600">Revenez bientôt pour découvrir nos prochains événements</p>
             </div>
           )}
         </div>
@@ -188,37 +209,50 @@ const Calendar = ({ events: externalEvents = [] }) => {
 
       {/* Modal pour afficher les détails de l'événement */}
       {selectedEvent && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 relative">
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 backdrop-blur-sm transition-opacity duration-300">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 relative transform transition-all duration-300 scale-100">
             <button
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
               onClick={() => setSelectedEvent(null)}
+              aria-label="Fermer la fenêtre de détails"
             >
-              <i className="fas fa-times text-xl"></i>
+              <i className="fas fa-times"></i>
             </button>
 
-            <h3 className="text-xl font-bold text-eeadb-blue mb-3">{selectedEvent.title}</h3>
-            <div className="space-y-2">
-              <div className="flex items-center text-gray-600">
-                <i className="fas fa-calendar-day mr-3 text-eeadb-blue"></i>
+            <div className="mb-4">
+              <div className="inline-block bg-eeadb-blue-100 text-eeadb-blue-800 px-3 py-1 rounded-full text-sm font-medium mb-3">
+                Événement
+              </div>
+              <h3 className="text-2xl font-bold text-eeadb-blue mb-3">{selectedEvent.title}</h3>
+            </div>
+            
+            <div className="space-y-3">
+              <div className="flex items-start text-gray-700 p-3 bg-gray-50 rounded-lg">
+                <i className="fas fa-calendar-day mr-3 mt-1 text-eeadb-blue-500"></i>
                 <span>{new Date(selectedEvent.start).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
               </div>
-              <div className="flex items-center text-gray-600">
-                <i className="fas fa-clock mr-3 text-eeadb-blue"></i>
+              
+              <div className="flex items-start text-gray-700 p-3 bg-gray-50 rounded-lg">
+                <i className="fas fa-clock mr-3 mt-1 text-eeadb-blue-500"></i>
                 <span>
                   {new Date(selectedEvent.start).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} -
                   {new Date(selectedEvent.end).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
+              
               {selectedEvent.location && (
-                <div className="flex items-center text-gray-600">
-                  <i className="fas fa-location-dot mr-3 text-eeadb-blue"></i>
+                <div className="flex items-start text-gray-700 p-3 bg-gray-50 rounded-lg">
+                  <i className="fas fa-location-dot mr-3 mt-1 text-eeadb-blue-500"></i>
                   <span>{selectedEvent.location}</span>
                 </div>
               )}
+              
               {selectedEvent.description && (
                 <div className="mt-4 pt-4 border-t border-gray-200">
-                  <p className="text-gray-700">{selectedEvent.description}</p>
+                  <h4 className="font-semibold text-eeadb-blue mb-2 flex items-center">
+                    <i className="fas fa-info-circle mr-2"></i>Description
+                  </h4>
+                  <p className="text-gray-700 leading-relaxed">{selectedEvent.description}</p>
                 </div>
               )}
             </div>
