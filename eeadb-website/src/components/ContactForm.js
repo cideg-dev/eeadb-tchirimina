@@ -14,23 +14,23 @@ const ContactForm = () => {
 
   const validate = (data) => {
     const errors = [];
-    
+
     if (!data.name || data.name.trim().length < 2) {
       errors.push('Le nom doit contenir au moins 2 caractères.');
     }
-    
+
     if (!data.email || !/^\S+@\S+\.\S+$/.test(data.email)) {
       errors.push('Adresse e-mail invalide.');
     }
-    
+
     if (!data.subject || data.subject.trim().length < 3) {
       errors.push('Le sujet doit contenir au moins 3 caractères.');
     }
-    
+
     if (!data.message || data.message.trim().length < 10) {
       errors.push('Le message doit contenir au moins 10 caractères.');
     }
-    
+
     return errors;
   };
 
@@ -45,7 +45,7 @@ const ContactForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const errors = validate(formData);
-    
+
     if (errors.length) {
       setStatus({ type: 'error', message: errors.join(' ') });
       return;
@@ -55,20 +55,29 @@ const ContactForm = () => {
     setStatus({ type: 'info', message: 'Envoi en cours...' });
 
     try {
-      // Dans une implémentation réelle, on enverrait les données à une API
-      // Pour cette démonstration, nous simulons l'envoi
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log('Form submitted:', formData);
-      setStatus({ 
-        type: 'success', 
-        message: 'Merci ! Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.' 
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Erreur lors de l\'envoi du message');
+      }
+
+      setStatus({
+        type: 'success',
+        message: 'Merci ! Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.'
       });
       setFormData({ name: '', email: '', message: '', subject: '' });
     } catch (error) {
-      setStatus({ 
-        type: 'error', 
-        message: 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer plus tard.' 
+      setStatus({
+        type: 'error',
+        message: error.message || 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer plus tard.'
       });
     } finally {
       setIsSubmitting(false);
@@ -93,7 +102,7 @@ const ContactForm = () => {
               required
             />
           </div>
-          
+
           <div>
             <label htmlFor="email" className="block text-gray-700 font-medium mb-2">Email *</label>
             <input
@@ -108,7 +117,7 @@ const ContactForm = () => {
             />
           </div>
         </div>
-        
+
         <div>
           <label htmlFor="subject" className="block text-gray-700 font-medium mb-2">Sujet *</label>
           <input
@@ -122,7 +131,7 @@ const ContactForm = () => {
             required
           />
         </div>
-        
+
         <div>
           <label htmlFor="message" className="block text-gray-700 font-medium mb-2">Message *</label>
           <textarea
@@ -136,7 +145,7 @@ const ContactForm = () => {
             required
           ></textarea>
         </div>
-        
+
         <div className="text-center">
           <button
             type="submit"
@@ -154,7 +163,7 @@ const ContactForm = () => {
             )}
           </button>
         </div>
-        
+
         {status.message && (
           <div className={`p-4 rounded-lg text-center ${
             status.type === 'success' ? 'bg-green-100 text-green-700' :
@@ -165,7 +174,7 @@ const ContactForm = () => {
           </div>
         )}
       </form>
-      
+
       <div className="mt-8 pt-6 border-t border-gray-200">
         <h3 className="text-lg font-semibold text-eeadb-blue mb-4 text-center">Autres moyens de nous contacter</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
