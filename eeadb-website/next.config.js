@@ -1,6 +1,5 @@
 module.exports = {
   reactStrictMode: true,
-  basePath: '/eeadb-tchirimina',
   trailingSlash: true,
   images: {
     domains: ['cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'localhost', 'eeadb-tchirimina.org'],

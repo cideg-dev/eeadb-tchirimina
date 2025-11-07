@@ -10,6 +10,7 @@ services:
     buildCommand: "npm install && npm run build"
     startCommand: "npm start"
     healthCheckPath: "/"
+    healthCheckGracePeriod: 300  # 5 minutes de délai de grâce
     envVars:
       - key: NODE_VERSION
         value: 20.x
