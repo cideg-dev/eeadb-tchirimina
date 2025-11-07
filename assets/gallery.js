@@ -21,10 +21,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('gallery');
   if (!container) return;
 
-  // Création de la barre de filtres
+  // Création de la barre de filtres avancés
   const filterBar = document.createElement('div');
   filterBar.className = 'filter-bar';
   filterBar.innerHTML = `
+    <div class="search-container">
+      <input type="search" id="search-input" placeholder="Rechercher par titre ou description..." />
+      <button id="clear-search" class="clear-btn" title="Effacer la recherche">×</button>
+    </div>
+    <label>Tri
+      <select id="sort-by">
+        <option value="date-desc">Date (récent → ancien)</option>
+        <option value="date-asc">Date (ancien → récent)</option>
+        <option value="title-asc">Titre (A → Z)</option>
+        <option value="title-desc">Titre (Z → A)</option>
+      </select>
+    </label>
     <label>Année
       <select id="filter-year">
         <option value="">Toutes</option>
@@ -34,11 +46,18 @@ document.addEventListener('DOMContentLoaded', () => {
       <select id="filter-cat">
         <option value="">Toutes</option>
       </select>
-    </label>`;
+    </label>
+    <div class="filter-actions">
+      <button id="reset-filters" class="button secondary">Réinitialiser</button>
+    </div>`;
   container.before(filterBar);
 
+  const searchInput = filterBar.querySelector('#search-input');
+  const clearSearch = filterBar.querySelector('#clear-search');
+  const sortSelect = filterBar.querySelector('#sort-by');
   const yearSelect = filterBar.querySelector('#filter-year');
   const catSelect = filterBar.querySelector('#filter-cat');
+  const resetButton = filterBar.querySelector('#reset-filters');
 
   // Chargement JSON (avec fallback)
   const fetchJSONWithFallback = async (paths) => {
@@ -60,12 +79,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const applyFilters = () => {
     const year = yearSelect.value;
     const cat = catSelect.value;
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const sortBy = sortSelect.value;
+    
+    // Filtrage
     filtered = allItems.filter(it => {
       const okYear = year ? (new Date(it.date).getFullYear().toString() === year) : true;
       const okCat = cat ? (it.category === cat) : true;
-      return okYear && okCat;
+      const okSearch = searchTerm ? (
+        (it.title && it.title.toLowerCase().includes(searchTerm)) ||
+        (it.description && it.description.toLowerCase().includes(searchTerm))
+      ) : true;
+      return okYear && okCat && okSearch;
     });
+    
+    // Tri
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'date-desc':
+          return new Date(b.date) - new Date(a.date);
+        case 'date-asc':
+          return new Date(a.date) - new Date(b.date);
+        case 'title-asc':
+          return (a.title || '').localeCompare(b.title || '');
+        case 'title-desc':
+          return (b.title || '').localeCompare(a.title || '');
+        default:
+          return 0;
+      }
+    });
+    
     renderGallery();
+    updateResultsCount();
+  };
+  
+  const updateResultsCount = () => {
+    const countEl = document.getElementById('results-count') || document.createElement('div');
+    countEl.id = 'results-count';
+    countEl.className = 'results-count';
+    countEl.textContent = `${filtered.length} résultat${filtered.length !== 1 ? 's' : ''} sur ${allItems.length}`;
+    if (!document.getElementById('results-count')) {
+      filterBar.appendChild(countEl);
+    }
   };
 
   const renderGallery = () => {
@@ -73,10 +128,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (observer) observer.disconnect();
 
     if (filtered.length === 0) {
-      container.textContent = 'Aucun résultat pour ce filtre.';
+      container.className = 'empty-gallery';
+      container.innerHTML = `
+        <i class="fa fa-image"></i>
+        <h3>Aucune photo trouvée</h3>
+        <p>Aucun résultat ne correspond à vos critères de recherche.</p>
+        <button onclick="document.getElementById('reset-filters').click()" 
+                class="button secondary">
+          Réinitialiser les filtres
+        </button>
+      `;
       return;
     }
 
+    container.className = 'gallery-grid';
+    
     filtered.forEach((item, idx) => {
       const card = document.createElement('article');
       card.className = 'gallery-card';
@@ -85,11 +151,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const img = document.createElement('img');
       img.dataset.src = item.thumb || item.src;
       img.alt = item.title || 'Image';
-      img.loading = 'lazy'; // HTML natif + IO pour l’effet
+      img.loading = 'lazy';
 
       const meta = document.createElement('div');
       meta.className = 'meta';
-      meta.innerHTML = `<div>${item.title || 'Sans titre'}</div><div>${item.description || ''}</div>`;
+      
+      // Formatage de la date
+      const formattedDate = item.date ? new Date(item.date).toLocaleDateString('fr-FR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }) : '';
+      
+      meta.innerHTML = `
+        <div class="gallery-title">${item.title || 'Sans titre'}</div>
+        <div class="gallery-date">${formattedDate}</div>
+        <div class="gallery-category">${item.category || ''}</div>
+        <div class="gallery-description">${item.description || ''}</div>
+      `;
 
       card.appendChild(img);
       card.appendChild(meta);
@@ -193,7 +272,34 @@ document.addEventListener('DOMContentLoaded', () => {
         opt.value = c; opt.textContent = c; catSelect.appendChild(opt);
       });
 
+      // Gestionnaires d'événements
+      searchInput.addEventListener('input', debounce(applyFilters, 300));
+      clearSearch.addEventListener('click', () => {
+        searchInput.value = '';
+        applyFilters();
+      });
+      sortSelect.addEventListener('change', applyFilters);
       yearSelect.onchange = catSelect.onchange = applyFilters;
+      resetButton.addEventListener('click', () => {
+        searchInput.value = '';
+        sortSelect.value = 'date-desc';
+        yearSelect.value = '';
+        catSelect.value = '';
+        applyFilters();
+      });
+      
+      // Fonction de debounce pour la recherche
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
 
       filtered = allItems; // initial
       renderGallery();
