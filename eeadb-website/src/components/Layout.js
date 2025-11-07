@@ -28,13 +28,7 @@ export default function Layout({ children, title = "EEADB-Tchirimina" }) {
         <meta name="description" content="Site officiel de l'Église Évangélique des Assemblées de Dieu du Bénin – Tchirimina (Temple BERACA)" />
         <link rel="icon" href="/favicon.ico" />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
       </Head>
-
-      <Script
-        src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"
-        strategy="beforeInteractive"
-      />
 
       {/* Lien pour sauter au contenu principal pour les utilisateurs de lecteurs d'écran */}
       <a 

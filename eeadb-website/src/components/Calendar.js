@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { getEvents } from '../lib/dataService';
+import Head from 'next/head';
 
 const Calendar = ({ events: externalEvents = [] }) => {
   const [view, setView] = useState('dayGridMonth');
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isCalendarReady, setIsCalendarReady] = useState(false);
   const calendarRef = useRef(null);
   const [activeButton, setActiveButton] = useState(view);
 
@@ -37,122 +37,121 @@ const Calendar = ({ events: externalEvents = [] }) => {
 
   // Initialiser le calendrier FullCalendar après le rendu du composant
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.FullCalendar && calendarRef.current && !isCalendarReady) {
+    if (typeof window !== 'undefined' && calendarRef.current) {
       // Import dynamique de FullCalendar pour éviter les erreurs de serveur
       const initializeCalendar = async () => {
-        const { Calendar } = await import('@fullcalendar/core');
-        const dayGridPlugin = await import('@fullcalendar/daygrid');
-        const timeGridPlugin = await import('@fullcalendar/timegrid');
-        const interactionPlugin = await import('@fullcalendar/interaction');
-        
-        const calendarInstance = new Calendar(calendarRef.current, {
-          plugins: [dayGridPlugin.default, timeGridPlugin.default, interactionPlugin.default],
-          initialView: view,
-          events: calendarEvents.map(event => ({
-            title: event.title,
-            start: event.start,
-            end: event.end,
-            description: event.description,
-            location: event.location
-          })),
-          locale: 'fr',
-          headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-          },
-          eventClick: function(info) {
-            setSelectedEvent({
-              title: info.event.title,
-              start: info.event.start,
-              end: info.event.end,
-              description: info.event.extendedProps.description,
-              location: info.event.extendedProps.location
-            });
-          },
-          // Utiliser les icônes FontAwesome pour les boutons
-          buttonIcons: false, // Désactiver les icônes pour utiliser les labels
-          buttonText: {
-            today: 'Aujourd\'hui',
-            month: 'Mois',
-            week: 'Semaine',
-            day: 'Jour'
-          },
-          // Thème personnalisé
-          themeSystem: 'standard'
-        });
+        try {
+          const [CalendarModule, dayGridPlugin, timeGridPlugin, interactionPlugin] = await Promise.all([
+            import('@fullcalendar/core'),
+            import('@fullcalendar/daygrid'),
+            import('@fullcalendar/timegrid'),
+            import('@fullcalendar/interaction')
+          ]);
+          
+          const calendarInstance = new CalendarModule.Calendar(calendarRef.current, {
+            plugins: [dayGridPlugin.default, timeGridPlugin.default, interactionPlugin.default],
+            initialView: view,
+            events: calendarEvents.map(event => ({
+              title: event.title,
+              start: event.start,
+              end: event.end,
+              description: event.description,
+              location: event.location
+            })),
+            locale: 'fr',
+            headerToolbar: {
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            eventClick: function(info) {
+              setSelectedEvent({
+                title: info.event.title,
+                start: info.event.start,
+                end: info.event.end,
+                description: info.event.extendedProps.description,
+                location: info.event.extendedProps.location
+              });
+            },
+            // Utiliser les icônes FontAwesome pour les boutons
+            buttonIcons: false, // Désactiver les icônes pour utiliser les labels
+            buttonText: {
+              today: 'Aujourd\'hui',
+              month: 'Mois',
+              week: 'Semaine',
+              day: 'Jour'
+            },
+            // Thème personnalisé
+            themeSystem: 'standard'
+          });
 
-        calendarInstance.render();
-        setIsCalendarReady(true);
+          calendarInstance.render();
 
-        // Nettoyer l'instance du calendrier lors du démontage
-        return () => {
-          calendarInstance.destroy();
-          setIsCalendarReady(false);
-        };
+          // Nettoyer l'instance du calendrier lors du démontage
+          return () => {
+            calendarInstance.destroy();
+          };
+        } catch (error) {
+          console.error('Erreur lors de l\'initialisation de FullCalendar:', error);
+        }
       };
 
       initializeCalendar();
     }
-  }, [calendarEvents, view, isCalendarReady]);
+  }, [calendarEvents, view]);
 
   const handleViewChange = (newView) => {
     setView(newView);
     setActiveButton(newView);
-    
-    // Mettre à jour le calendrier si déjà initialisé
-    if (typeof window !== 'undefined' && window.FullCalendar && calendarRef.current && isCalendarReady) {
-      const { Calendar } = window.FullCalendar;
-      const calendarInstance = Calendar.getCalendar(calendarRef.current);
-      if (calendarInstance) {
-        calendarInstance.changeView(newView);
-      }
-    }
   };
 
   return (
-    <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-eeadb-blue mb-4 md:mb-0">Calendrier des événements</h2>
-        <div className="flex gap-2 flex-wrap justify-center">
-          <button
-            className={`px-5 py-2.5 rounded-xl transition-all duration-300 transform hover:scale-105 ${
-              activeButton === 'dayGridMonth'
-                ? 'bg-gradient-to-r from-eeadb-blue-600 to-eeadb-blue-700 text-white shadow-lg'
-                : 'bg-white text-eeadb-blue-700 border border-eeadb-blue-200 hover:bg-eeadb-blue-50'
-            }`}
-            onClick={() => handleViewChange('dayGridMonth')}
-          >
-            <i className="fas fa-calendar-days mr-2"></i>Mois
-          </button>
-          <button
-            className={`px-5 py-2.5 rounded-xl transition-all duration-300 transform hover:scale-105 ${
-              activeButton === 'timeGridWeek'
-                ? 'bg-gradient-to-r from-eeadb-blue-600 to-eeadb-blue-700 text-white shadow-lg'
-                : 'bg-white text-eeadb-blue-700 border border-eeadb-blue-200 hover:bg-eeadb-blue-50'
-            }`}
-            onClick={() => handleViewChange('timeGridWeek')}
-          >
-            <i className="fas fa-calendar-week mr-2"></i>Semaine
-          </button>
-          <button
-            className={`px-5 py-2.5 rounded-xl transition-all duration-300 transform hover:scale-105 ${
-              activeButton === 'timeGridDay'
-                ? 'bg-gradient-to-r from-eeadb-blue-600 to-eeadb-blue-700 text-white shadow-lg'
-                : 'bg-white text-eeadb-blue-700 border border-eeadb-blue-200 hover:bg-eeadb-blue-50'
-            }`}
-            onClick={() => handleViewChange('timeGridDay')}
-          >
-            <i className="fas fa-calendar-day mr-2"></i>Jour
-          </button>
-        </div>
-      </div>
-
-      {/* Conteneur pour le calendrier FullCalendar */}
-      <div ref={calendarRef} className="min-h-[500px] bg-white p-4 rounded-xl border border-gray-200 shadow-inner" />
+    <>
+      <Head>
+        <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
+      </Head>
       
-      {/* Affichage des événements dans une liste comme solution de repli */}
-      {!isCalendarReady && (
+      <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-eeadb-blue mb-4 md:mb-0">Calendrier des événements</h2>
+          <div className="flex gap-2 flex-wrap justify-center">
+            <button
+              className={`px-5 py-2.5 rounded-xl transition-all duration-300 transform hover:scale-105 ${
+                activeButton === 'dayGridMonth'
+                  ? 'bg-gradient-to-r from-eeadb-blue-600 to-eeadb-blue-700 text-white shadow-lg'
+                  : 'bg-white text-eeadb-blue-700 border border-eeadb-blue-200 hover:bg-eeadb-blue-50'
+              }`}
+              onClick={() => handleViewChange('dayGridMonth')}
+            >
+              <i className="fas fa-calendar-days mr-2"></i>Mois
+            </button>
+            <button
+              className={`px-5 py-2.5 rounded-xl transition-all duration-300 transform hover:scale-105 ${
+                activeButton === 'timeGridWeek'
+                  ? 'bg-gradient-to-r from-eeadb-blue-600 to-eeadb-blue-700 text-white shadow-lg'
+                  : 'bg-white text-eeadb-blue-700 border border-eeadb-blue-200 hover:bg-eeadb-blue-50'
+              }`}
+              onClick={() => handleViewChange('timeGridWeek')}
+            >
+              <i className="fas fa-calendar-week mr-2"></i>Semaine
+            </button>
+            <button
+              className={`px-5 py-2.5 rounded-xl transition-all duration-300 transform hover:scale-105 ${
+                activeButton === 'timeGridDay'
+                  ? 'bg-gradient-to-r from-eeadb-blue-600 to-eeadb-blue-700 text-white shadow-lg'
+                  : 'bg-white text-eeadb-blue-700 border border-eeadb-blue-200 hover:bg-eeadb-blue-50'
+              }`}
+              onClick={() => handleViewChange('timeGridDay')}
+            >
+              <i className="fas fa-calendar-day mr-2"></i>Jour
+            </button>
+          </div>
+        </div>
+
+        {/* Conteneur pour le calendrier FullCalendar */}
+        <div ref={calendarRef} className="min-h-[500px] bg-white p-4 rounded-xl border border-gray-200 shadow-inner" />
+        
+        {/* Affichage des événements dans une liste comme solution de repli */}
         <div className="mt-8">
           <h3 className="text-lg font-semibold text-eeadb-blue mb-4 flex items-center">
             <i className="fas fa-list mr-2"></i>Événements à venir
@@ -205,61 +204,61 @@ const Calendar = ({ events: externalEvents = [] }) => {
             </div>
           )}
         </div>
-      )}
 
-      {/* Modal pour afficher les détails de l'événement */}
-      {selectedEvent && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 backdrop-blur-sm transition-opacity duration-300">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 relative transform transition-all duration-300 scale-100">
-            <button
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
-              onClick={() => setSelectedEvent(null)}
-              aria-label="Fermer la fenêtre de détails"
-            >
-              <i className="fas fa-times"></i>
-            </button>
+        {/* Modal pour afficher les détails de l'événement */}
+        {selectedEvent && (
+          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 backdrop-blur-sm transition-opacity duration-300">
+            <div className="bg-white rounded-2xl max-w-md w-full p-6 relative transform transition-all duration-300 scale-100">
+              <button
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
+                onClick={() => setSelectedEvent(null)}
+                aria-label="Fermer la fenêtre de détails"
+              >
+                <i className="fas fa-times"></i>
+              </button>
 
-            <div className="mb-4">
-              <div className="inline-block bg-eeadb-blue-100 text-eeadb-blue-800 px-3 py-1 rounded-full text-sm font-medium mb-3">
-                Événement
-              </div>
-              <h3 className="text-2xl font-bold text-eeadb-blue mb-3">{selectedEvent.title}</h3>
-            </div>
-            
-            <div className="space-y-3">
-              <div className="flex items-start text-gray-700 p-3 bg-gray-50 rounded-lg">
-                <i className="fas fa-calendar-day mr-3 mt-1 text-eeadb-blue-500"></i>
-                <span>{new Date(selectedEvent.start).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <div className="mb-4">
+                <div className="inline-block bg-eeadb-blue-100 text-eeadb-blue-800 px-3 py-1 rounded-full text-sm font-medium mb-3">
+                  Événement
+                </div>
+                <h3 className="text-2xl font-bold text-eeadb-blue mb-3">{selectedEvent.title}</h3>
               </div>
               
-              <div className="flex items-start text-gray-700 p-3 bg-gray-50 rounded-lg">
-                <i className="fas fa-clock mr-3 mt-1 text-eeadb-blue-500"></i>
-                <span>
-                  {new Date(selectedEvent.start).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} -
-                  {new Date(selectedEvent.end).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-                </span>
-              </div>
-              
-              {selectedEvent.location && (
+              <div className="space-y-3">
                 <div className="flex items-start text-gray-700 p-3 bg-gray-50 rounded-lg">
-                  <i className="fas fa-location-dot mr-3 mt-1 text-eeadb-blue-500"></i>
-                  <span>{selectedEvent.location}</span>
+                  <i className="fas fa-calendar-day mr-3 mt-1 text-eeadb-blue-500"></i>
+                  <span>{new Date(selectedEvent.start).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
                 </div>
-              )}
-              
-              {selectedEvent.description && (
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <h4 className="font-semibold text-eeadb-blue mb-2 flex items-center">
-                    <i className="fas fa-info-circle mr-2"></i>Description
-                  </h4>
-                  <p className="text-gray-700 leading-relaxed">{selectedEvent.description}</p>
+                
+                <div className="flex items-start text-gray-700 p-3 bg-gray-50 rounded-lg">
+                  <i className="fas fa-clock mr-3 mt-1 text-eeadb-blue-500"></i>
+                  <span>
+                    {new Date(selectedEvent.start).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} -
+                    {new Date(selectedEvent.end).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
                 </div>
-              )}
+                
+                {selectedEvent.location && (
+                  <div className="flex items-start text-gray-700 p-3 bg-gray-50 rounded-lg">
+                    <i className="fas fa-location-dot mr-3 mt-1 text-eeadb-blue-500"></i>
+                    <span>{selectedEvent.location}</span>
+                  </div>
+                )}
+                
+                {selectedEvent.description && (
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <h4 className="font-semibold text-eeadb-blue mb-2 flex items-center">
+                      <i className="fas fa-info-circle mr-2"></i>Description
+                    </h4>
+                    <p className="text-gray-700 leading-relaxed">{selectedEvent.description}</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 
