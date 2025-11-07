@@ -1,15 +1,34 @@
 import { useState, useEffect } from 'react';
+import { getEvents } from '@/lib/dataService';
 
-const Calendar = ({ events = [] }) => {
+const Calendar = ({ events: externalEvents = [] }) => {
   const [view, setView] = useState('dayGridMonth');
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Simuler l'initialisation de FullCalendar
+  // Charger les événements depuis le service de données
   useEffect(() => {
-    // Dans une implémentation réelle, on initialiserait ici FullCalendar
-    // Pour cette démonstration, nous allons simplement simuler le comportement
-    console.log('Calendar initialized with events:', events);
-  }, [events]);
+    const fetchEvents = async () => {
+      try {
+        if (externalEvents && externalEvents.length > 0) {
+          // Si les événements sont passés en props, les utiliser directement
+          setEvents(externalEvents);
+        } else {
+          // Sinon, charger les données depuis le service
+          const data = await getEvents();
+          setEvents(data);
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des événements:', error);
+        setEvents([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, [externalEvents]);
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
@@ -69,7 +88,11 @@ const Calendar = ({ events = [] }) => {
       {/* Affichage des événements dans une liste pour la démonstration */}
       <div className="mt-6">
         <h3 className="text-lg font-semibold text-eeadb-blue mb-3">Événements à venir</h3>
-        {events.length > 0 ? (
+        {loading ? (
+          <div className="flex justify-center items-center h-40">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-eeadb-blue"></div>
+          </div>
+        ) : events.length > 0 ? (
           <div className="space-y-3">
             {events.map((event, index) => (
               <div 

@@ -1,15 +1,41 @@
 import { useState, useEffect } from 'react';
+import { getResources } from '@/lib/dataService';
 
-const ResourcesList = ({ resources = [] }) => {
-  const [filteredResources, setFilteredResources] = useState(resources);
+const ResourcesList = ({ resources: externalResources = [] }) => {
+  const [resources, setResources] = useState(externalResources);
+  const [filteredResources, setFilteredResources] = useState(externalResources);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOption, setSortOption] = useState('date-desc');
+  const [loading, setLoading] = useState(externalResources.length === 0);
 
   // Extraire les catégories et types uniques
-  const categories = ['all', ...new Set(resources.map(resource => resource.category))];
-  const types = ['all', ...new Set(resources.map(resource => resource.type))];
+  const categories = ['all', ...new Set(resources.map(resource => resource.category || 'autre'))];
+  const types = ['all', ...new Set(resources.map(resource => resource.type || 'autre'))];
+
+  // Charger les ressources depuis le service de données
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        if (externalResources && externalResources.length > 0) {
+          // Si les ressources sont passées en props, les utiliser directement
+          setResources(externalResources);
+        } else {
+          // Sinon, charger les données depuis le service
+          const data = await getResources();
+          setResources(data);
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des ressources:', error);
+        setResources([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResources();
+  }, [externalResources]);
 
   // Filtrer et trier les ressources
   useEffect(() => {
@@ -131,7 +157,11 @@ const ResourcesList = ({ resources = [] }) => {
         {filteredResources.length} {filteredResources.length === 1 ? 'ressource' : 'ressources'} trouvée{filteredResources.length > 1 ? 's' : ''}
       </div>
       
-      {filteredResources.length === 0 ? (
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-eeadb-blue"></div>
+        </div>
+      ) : filteredResources.length === 0 ? (
         <div className="text-center py-16">
           <i className="fas fa-file-alt text-5xl text-gray-300 mb-4"></i>
           <h3 className="text-xl font-medium text-gray-900 mb-2">Aucune ressource trouvée</h3>
@@ -153,7 +183,7 @@ const ResourcesList = ({ resources = [] }) => {
                     <div>
                       <h3 className="font-semibold text-eeadb-blue">{resource.title}</h3>
                       <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
-                        <span className="bg-blue-100 text-eeadb-blue px-2 py-1 rounded">{resource.category}</span>
+                        <span className="bg-blue-100 text-eeadb-blue px-2 py-1 rounded">{resource.category || 'Autre'}</span>
                         <span>{new Date(resource.date).toLocaleDateString('fr-FR')}</span>
                       </div>
                     </div>
@@ -163,7 +193,7 @@ const ResourcesList = ({ resources = [] }) => {
                   )}
                 </div>
                 <a 
-                  href={resource.url} 
+                  href={resource.url || '#'} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="bg-eeadb-blue text-white px-4 py-2 rounded-lg hover:bg-eeadb-blue-dark transition-colors flex items-center"

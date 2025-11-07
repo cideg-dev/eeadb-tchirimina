@@ -1,16 +1,42 @@
 import { useState, useEffect } from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
+import { getPhotos } from '@/lib/dataService';
 
-const PhotoGallery = ({ photos = [], title = "Galerie Photo", description = "Découvrez nos moments de partage et de célébration" }) => {
-  const [filteredPhotos, setFilteredPhotos] = useState(photos);
+const PhotoGallery = ({ photos: externalPhotos = [], title = "Galerie Photo", description = "Découvrez nos moments de partage et de célébration" }) => {
+  const [photos, setPhotos] = useState(externalPhotos);
+  const [filteredPhotos, setFilteredPhotos] = useState(externalPhotos);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [loading, setLoading] = useState(externalPhotos.length === 0);
 
   // Extraire les catégories uniques
   const categories = ['all', ...new Set(photos.map(photo => photo.category || 'autre'))];
+
+  // Charger les photos depuis le service de données
+  useEffect(() => {
+    const fetchPhotos = async () => {
+      try {
+        if (externalPhotos && externalPhotos.length > 0) {
+          // Si les photos sont passées en props, les utiliser directement
+          setPhotos(externalPhotos);
+        } else {
+          // Sinon, charger les données depuis le service
+          const data = await getPhotos();
+          setPhotos(data);
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des photos:', error);
+        setPhotos([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPhotos();
+  }, [externalPhotos]);
 
   // Filtrer les photos
   useEffect(() => {
@@ -125,7 +151,11 @@ const PhotoGallery = ({ photos = [], title = "Galerie Photo", description = "Dé
       </div>
 
       {/* Grille de photos */}
-      {filteredPhotos.length === 0 ? (
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-eeadb-blue"></div>
+        </div>
+      ) : filteredPhotos.length === 0 ? (
         <div className="text-center py-16">
           <i className="fas fa-images text-5xl text-gray-300 mb-4" aria-hidden="true"></i>
           <h3 className="text-xl font-medium text-gray-900 mb-2">Aucune photo trouvée</h3>

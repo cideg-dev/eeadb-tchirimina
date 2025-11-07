@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getVersetDuJour } from '@/lib/dataService';
 
 const VersetJour = ({ versetData }) => {
   const [verset, setVerset] = useState(null);
@@ -11,20 +12,12 @@ const VersetJour = ({ versetData }) => {
       setVerset(versetData);
       setLoading(false);
     } else {
-      // Sinon, charger les données dynamiquement
+      // Sinon, charger les données depuis le service
       const fetchVerset = async () => {
         try {
           setLoading(true);
-          // Dans une implémentation réelle, on récupérerait le verset depuis une API
-          // Pour cette démonstration, nous simulons la récupération
-          await new Promise(resolve => setTimeout(resolve, 500));
-          
-          // Données simulées pour le verset du jour
-          setVerset({
-            text: "Apportez toutes les dîmes à la maison du trésor, afin qu'il y ait de la nourriture dans ma maison ; mettez-moi cela à l'épreuve, dit l'Éternel des armées ; et vous verrez si je n'ouvre pas pour vous les écluses des cieux, pour répandre sur vous une bénédiction jusqu'à ce qu'il n'y ait plus place pour la recevoir.",
-            reference: "Malachie 3:10",
-            source: "Bible Segond 21"
-          });
+          const data = await getVersetDuJour();
+          setVerset(data);
         } catch (err) {
           setError("Impossible de charger le verset du jour. Veuillez réessayer plus tard.");
         } finally {
