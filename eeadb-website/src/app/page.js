@@ -1,8 +1,26 @@
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import VersetJour from '../components/VersetJour';
-import Calendar from '../components/Calendar';
-import PhotoGallery from '../components/PhotoGallery';
+import dynamic from 'next/dynamic';
+
+// Chargement différé des composants lourds
+const Calendar = dynamic(() => import('../components/Calendar'), {
+  loading: () => (
+    <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm min-h-[500px] flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-eeadb-blue"></div>
+    </div>
+  ),
+  ssr: false
+});
+
+const PhotoGallery = dynamic(() => import('../components/PhotoGallery'), {
+  loading: () => (
+    <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm min-h-[300px] flex items-center justify-center">
+      <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-eeadb-blue"></div>
+    </div>
+  ),
+  ssr: false
+});
 
 export default function Home() {
   return (

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { getEvents } from '../lib/dataService';
-import Head from 'next/head';
 
 const Calendar = ({ events: externalEvents = [] }) => {
   const [view, setView] = useState('dayGridMonth');
@@ -38,65 +37,57 @@ const Calendar = ({ events: externalEvents = [] }) => {
   // Initialiser le calendrier FullCalendar après le rendu du composant
   useEffect(() => {
     if (typeof window !== 'undefined' && calendarRef.current) {
+      let calendarInstance = null;
+      
       // Import dynamique de FullCalendar pour éviter les erreurs de serveur
       const initializeCalendar = async () => {
         try {
-          const [CalendarModule, dayGridPlugin, timeGridPlugin, interactionPlugin] = await Promise.all([
-            import('@fullcalendar/core'),
-            import('@fullcalendar/daygrid'),
-            import('@fullcalendar/timegrid'),
-            import('@fullcalendar/interaction')
-          ]);
+          // Charger uniquement quand nécessaire
+          if (calendarEvents.length === 0) return;
           
-          const calendarInstance = new CalendarModule.Calendar(calendarRef.current, {
-            plugins: [dayGridPlugin.default, timeGridPlugin.default, interactionPlugin.default],
+          const { Calendar } = await import('@fullcalendar/core');
+          const { default: dayGridPlugin } = await import('@fullcalendar/daygrid');
+          const { default: timeGridPlugin } = await import('@fullcalendar/timegrid');
+          const { default: interactionPlugin } = await import('@fullcalendar/interaction');
+          
+          calendarInstance = new Calendar(calendarRef.current, {
+            plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
             initialView: view,
-            events: calendarEvents.map(event => ({
-              title: event.title,
-              start: event.start,
-              end: event.end,
-              description: event.description,
-              location: event.location
-            })),
+            events: calendarEvents.slice(0, 20), // Limiter à 20 événements pour la performance
             locale: 'fr',
-            headerToolbar: {
-              left: 'prev,next today',
-              center: 'title',
-              right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
+            headerToolbar: false, // Désactiver la toolbar pour améliorer les performances
             eventClick: function(info) {
               setSelectedEvent({
                 title: info.event.title,
                 start: info.event.start,
                 end: info.event.end,
-                description: info.event.extendedProps.description,
-                location: info.event.extendedProps.location
+                description: info.event.extendedProps?.description,
+                location: info.event.extendedProps?.location
               });
             },
-            // Utiliser les icônes FontAwesome pour les boutons
-            buttonIcons: false, // Désactiver les icônes pour utiliser les labels
-            buttonText: {
-              today: 'Aujourd\'hui',
-              month: 'Mois',
-              week: 'Semaine',
-              day: 'Jour'
-            },
-            // Thème personnalisé
-            themeSystem: 'standard'
+            buttonIcons: false,
+            // Configuration minimale pour la performance
+            dayMaxEvents: 3,
+            eventDisplay: 'block',
+            height: 'auto'
           });
 
           calendarInstance.render();
-
-          // Nettoyer l'instance du calendrier lors du démontage
-          return () => {
-            calendarInstance.destroy();
-          };
         } catch (error) {
           console.error('Erreur lors de l\'initialisation de FullCalendar:', error);
         }
       };
 
-      initializeCalendar();
+      // Délai pour éviter le blocage du thread principal
+      const timer = setTimeout(initializeCalendar, 100);
+
+      // Nettoyer l'instance du calendrier lors du démontage
+      return () => {
+        clearTimeout(timer);
+        if (calendarInstance) {
+          calendarInstance.destroy();
+        }
+      };
     }
   }, [calendarEvents, view]);
 
@@ -106,10 +97,6 @@ const Calendar = ({ events: externalEvents = [] }) => {
   };
 
   return (
-    <>
-      <Head>
-        <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
-      </Head>
       
       <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">

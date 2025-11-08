@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-import 'react-lazy-load-image-component/src/effects/blur.css';
+import OptimizedImage from './OptimizedImage';
 import { getPhotos } from '../lib/dataService';
 
 const PhotoGallery = ({ photos: externalPhotos = [], title = "Galerie Photo", description = "Découvrez nos moments de partage et de célébration" }) => {
@@ -187,14 +186,12 @@ const PhotoGallery = ({ photos: externalPhotos = [], title = "Galerie Photo", de
               aria-label={`Voir la photo: ${photo.title}`}
             >
               <div className="aspect-square overflow-hidden">
-                <LazyLoadImage 
+                <OptimizedImage 
                   src={photo.src} 
                   alt={photo.title} 
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                  effect="blur"
-                  wrapperClassName="w-full h-full"
-                  width="100%"
-                  height="100%"
+                  width={400}
+                  height={400}
                 />
               </div>
               <div className="p-4">
