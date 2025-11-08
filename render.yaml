@@ -2,7 +2,7 @@ services:
   # Service web pour le site Next.js
   - type: web
     name: eeadb-website
-    env: node
+    runtime: node
     region: frankfurt  # ou 'ohio' pour l'Amérique du Nord
     rootDir: ./eeadb-website
     plan: free
@@ -10,7 +10,6 @@ services:
     buildCommand: "npm install && npm run build"
     startCommand: "npm start"
     healthCheckPath: "/"
-    healthCheckGracePeriod: 300  # 5 minutes de délai de grâce
     envVars:
       - key: NODE_VERSION
         value: 20.x
