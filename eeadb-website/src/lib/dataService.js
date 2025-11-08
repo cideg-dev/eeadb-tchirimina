@@ -94,26 +94,25 @@ export const getEvents = async () => {
 
 // Fonction pour charger les images de la galerie
 export const getPhotos = async () => {
-  // Pour l'instant, des images de démonstration
-  // En production, chargerait les images du serveur
+  // Utilisation d'images SVG locales au lieu de placehold.co
   return [
     {
       id: 1,
-      src: "https://placehold.co/800x600?text=Culte+dimanche",
+      src: "/images/placeholder-culte.svg",
       alt: "Culte dominical",
       title: "Culte du dimanche matin",
       description: "Notre culte hebdomadaire du dimanche"
     },
     {
       id: 2,
-      src: "https://placehold.co/800x600?text=Groupe+prière",
+      src: "/images/placeholder-priere.svg",
       alt: "Groupe de prière",
       title: "Groupe de prière",
       description: "Groupe de prière intercession"
     },
     {
       id: 3,
-      src: "https://placehold.co/800x600?text=École+dominicale",
+      src: "/images/placeholder-ecole.svg",
       alt: "École dominicale",
       title: "École dominicale",
       description: "École biblique pour enfants"
