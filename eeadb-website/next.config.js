@@ -3,7 +3,28 @@ module.exports = {
   trailingSlash: true,
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : undefined,
   images: {
-    domains: ['cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'localhost', 'eeadb-tchirimina.org', 'placehold.co'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.jsdelivr.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdnjs.cloudflare.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: 'eeadb-tchirimina.org',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      }
+    ],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60 * 60 * 24 * 7, // 1 semaine
   },
