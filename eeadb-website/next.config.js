@@ -1,6 +1,7 @@
 module.exports = {
   reactStrictMode: true,
   trailingSlash: true,
+  assetPrefix: process.env.NODE_ENV === 'production' ? '' : undefined,
   images: {
     domains: ['cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'localhost', 'eeadb-tchirimina.org', 'placehold.co'],
     formats: ['image/webp', 'image/avif'],

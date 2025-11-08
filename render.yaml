@@ -14,6 +14,8 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 20.x
+      - key: NODE_ENV
+        value: production
       # Variables d'authentification admin
       - key: ADMIN_EMAIL
         value: "admin@eeadb-tchirimina.com"  # Remplacez par votre email
