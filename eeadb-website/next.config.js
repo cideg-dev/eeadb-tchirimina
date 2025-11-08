@@ -2,7 +2,7 @@ module.exports = {
   reactStrictMode: true,
   trailingSlash: true,
   images: {
-    domains: ['cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'localhost', 'eeadb-tchirimina.org'],
+    domains: ['cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'localhost', 'eeadb-tchirimina.org', 'placehold.co'],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60 * 60 * 24 * 7, // 1 semaine
   },
