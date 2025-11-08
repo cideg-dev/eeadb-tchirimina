@@ -97,7 +97,7 @@ const Calendar = ({ events: externalEvents = [] }) => {
   };
 
   return (
-      
+    <>
       <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-eeadb-blue mb-4 md:mb-0">Calendrier des événements</h2>
