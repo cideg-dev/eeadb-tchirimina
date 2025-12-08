@@ -1,101 +1,34 @@
-// Service pour charger les données depuis le répertoire data/
-// En production, ces données pourraient provenir d'une API
+/**
+ * Service de chargement des données pour l'application BERACA
+ * Gère le chargement sécurisé des données depuis les fichiers locaux ou API
+ * @module DataService
+ */
 
-// Charger les données des fichiers JSON
-const loadData = async (filename) => {
-  if (typeof window !== 'undefined') {
-    // Environnement client - charger depuis une API simulée
-    // Pour une implémentation réelle, remplacer par un appel API
-    try {
-      const response = await fetch(`/api/${filename}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json();
-    } catch (error) {
-      console.error(`Erreur lors du chargement de ${filename}:`, error);
-      
-      // Données fallback pour la démonstration
-      if (filename === 'verset_du_jour.json') {
-        return {
-          date: new Date().toISOString().split('T')[0],
-          verset: "Apportez toutes les dîmes à la maison du trésor...",
-          reference: "Malachie 3:10",
-          source: "Bible Segond 21"
-        };
-      } else if (filename === 'events.json') {
-        return [
-          {
-            id: "fallback-1",
-            title: "Événement de démonstration",
-            start: new Date().toISOString(),
-            end: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-            description: "Ceci est un événement de démonstration",
-            location: "Temple BERACA"
-          }
-        ];
-      }
-      return [];
-    }
-  } else {
-    // Environnement serveur - charger les données statiques
-    // Pour l'instant, on retourne des données de démonstration
-    // En production, on chargerait les fichiers réels
-    if (filename === 'verset_du_jour.json') {
-      return {
-        date: new Date().toISOString().split('T')[0],
-        verset: "Apportez toutes les dîmes à la maison du trésor...",
-        reference: "Malachie 3:10",
-        source: "Bible Segond 21"
-      };
-    } else if (filename === 'events.json') {
-      return [
-        {
-          id: "fallback-1",
-          title: "Événement de démonstration",
-          start: new Date().toISOString(),
-          end: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-          description: "Ceci est un événement de démonstration",
-          location: "Temple BERACA"
-        }
-      ];
-    }
-    return [];
-  }
+// Configuration des endpoints autorisés (whitelist)
+const ALLOWED_ENDPOINTS = {
+  'verset_du_jour.json': '/api/verset_du_jour.json',
+  'events.json': '/api/events.json',
+  'photos.json': '/api/photos.json',
+  'resources.json': '/api/resources.json'
 };
 
-export const getVersetDuJour = async () => {
-  try {
-    const data = await loadData('verset_du_jour.json');
-    return {
-      text: data.verset || data.text,
-      reference: data.reference,
-      source: data.source
-    };
-  } catch (error) {
-    console.error('Erreur lors du chargement du verset du jour:', error);
-    return {
-      text: "Apportez toutes les dîmes à la maison du trésor...",
-      reference: "Malachie 3:10",
-      source: "Bible Segond 21"
-    };
-  }
-};
-
-export const getEvents = async () => {
-  try {
-    const data = await loadData('events.json');
-    return Array.isArray(data) ? data : [];
-  } catch (error) {
-    console.error('Erreur lors du chargement des événements:', error);
-    return [];
-  }
-};
-
-// Fonction pour charger les images de la galerie
-export const getPhotos = async () => {
-  // Utilisation d'images SVG locales au lieu de placehold.co
-  return [
+// Données fallback centralisées
+const FALLBACK_DATA = {
+  verset: {
+    date: new Date().toISOString().split('T')[0],
+    text: "Apportez toutes les dîmes à la maison du trésor, afin qu'il y ait de la nourriture dans ma maison; mettez-moi ainsi à l'épreuve, dit l'Éternel des armées, et voyez si je ne vous ouvre pas les fenêtres des cieux, si je ne répands pas sur vous une bénédiction jusqu'à ce qu'il n'y ait plus de place.",
+    reference: "Malachie 3:10",
+    source: "Bible Segond 21"
+  },
+  events: [{
+    id: "fallback-1",
+    title: "Culte dominical",
+    start: new Date().toISOString(),
+    end: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+    description: "Culte hebdomadaire du dimanche matin",
+    location: "Temple BERACA"
+  }],
+  photos: [
     {
       id: 1,
       src: "/images/placeholder-culte.svg",
@@ -117,12 +50,8 @@ export const getPhotos = async () => {
       title: "École dominicale",
       description: "École biblique pour enfants"
     }
-  ];
-};
-
-export const getResources = async () => {
-  // Pour l'instant, des ressources de démonstration
-  return [
+  ],
+  resources: [
     {
       id: 1,
       title: "Guide de prière",
@@ -144,5 +73,140 @@ export const getResources = async () => {
       type: "audio",
       date: new Date().toISOString().split('T')[0]
     }
-  ];
+  ]
+};
+
+/**
+ * Valide si un endpoint est autorisé
+ * @param {string} filename - Le nom du fichier/endpoint
+ * @returns {boolean} - True si l'endpoint est autorisé
+ */
+const isValidEndpoint = (filename) => {
+  return Object.keys(ALLOWED_ENDPOINTS).includes(filename);
+};
+
+/**
+ * Charge les données depuis l'API avec gestion d'erreur sécurisée
+ * @param {string} endpoint - L'endpoint API à appeler
+ * @returns {Promise<any>} - Les données chargées ou les données fallback
+ */
+const fetchFromAPI = async (endpoint) => {
+  try {
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // Timeout de 5 secondes
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP: ${response.status}`);
+    }
+
+    const data = await response.json();
+    
+    // Validation basique des données
+    if (!data || (Array.isArray(data) && data.length === 0)) {
+      throw new Error('Données vides reçues');
+    }
+
+    return data;
+  } catch (error) {
+    // Log sécurisé sans exposition d'informations sensibles
+    console.warn(`[DataService] Erreur lors du chargement depuis ${endpoint}: ${error.message}`);
+    return null;
+  }
+};
+
+/**
+ * Charge les données depuis le endpoint spécifié
+ * @param {string} filename - Le nom du fichier/endpoint
+ * @returns {Promise<any>} - Les données chargées
+ */
+const loadData = async (filename) => {
+  // Validation de l'endpoint
+  if (!isValidEndpoint(filename)) {
+    console.warn(`[DataService] Endpoint non autorisé: ${filename}`);
+    return FALLBACK_DATA[filename.split('.')[0]] || [];
+  }
+
+  const endpoint = ALLOWED_ENDPOINTS[filename];
+  
+  // Environnement client: appel API
+  if (typeof window !== 'undefined') {
+    const data = await fetchFromAPI(endpoint);
+    return data || FALLBACK_DATA[filename.split('.')[0]] || [];
+  }
+  
+  // Environnement serveur: données statiques
+  // TODO: Implémenter le chargement depuis le système de fichiers
+  return FALLBACK_DATA[filename.split('.')[0]] || [];
+};
+
+/**
+ * Récupère le verset du jour
+ * @returns {Promise<{text: string, reference: string, source: string}>}
+ */
+export const getVersetDuJour = async () => {
+  try {
+    const data = await loadData('verset_du_jour.json');
+    
+    // Validation et normalisation des données
+    if (!data || (!data.verset && !data.text)) {
+      throw new Error('Structure de données invalide');
+    }
+
+    return {
+      text: data.verset || data.text,
+      reference: data.reference || 'Référence non disponible',
+      source: data.source || 'Source inconnue'
+    };
+  } catch (error) {
+    console.warn('[DataService] Erreur getVersetDuJour, utilisation fallback');
+    return FALLBACK_DATA.verset;
+  }
+};
+
+/**
+ * Récupère la liste des événements
+ * @returns {Promise<Array>}
+ */
+export const getEvents = async () => {
+  try {
+    const data = await loadData('events.json');
+    return Array.isArray(data) ? data : FALLBACK_DATA.events;
+  } catch (error) {
+    console.warn('[DataService] Erreur getEvents, utilisation fallback');
+    return FALLBACK_DATA.events;
+  }
+};
+
+/**
+ * Récupère la liste des photos pour la galerie
+ * @returns {Promise<Array>}
+ */
+export const getPhotos = async () => {
+  try {
+    const data = await loadData('photos.json');
+    return Array.isArray(data) ? data : FALLBACK_DATA.photos;
+  } catch (error) {
+    console.warn('[DataService] Erreur getPhotos, utilisation fallback');
+    return FALLBACK_DATA.photos;
+  }
+};
+
+/**
+ * Récupère la liste des ressources
+ * @returns {Promise<Array>}
+ */
+export const getResources = async () => {
+  try {
+    const data = await loadData('resources.json');
+    return Array.isArray(data) ? data : FALLBACK_DATA.resources;
+  } catch (error) {
+    console.warn('[DataService] Erreur getResources, utilisation fallback');
+    return FALLBACK_DATA.resources;
+  }
 };
