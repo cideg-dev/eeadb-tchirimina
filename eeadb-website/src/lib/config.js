@@ -17,8 +17,9 @@ export const SECURITY_CONFIG = {
   
   // Headers de sécurité
   SECURITY_HEADERS: {
+    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.googleapis.com https://translate.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://translate.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://translate.googleapis.com; frame-src 'self' https://www.youtube.com; object-src 'none'; base-uri 'self'",
     'X-Content-Type-Options': 'nosniff',
-    'X-Frame-Options': 'DENY',
+    'X-Frame-Options': 'SAMEORIGIN', // Changé de DENY à SAMEORIGIN pour permettre les iframes internes si nécessaire
     'X-XSS-Protection': '1; mode=block',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
