@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import OptimizedImage from './OptimizedImage';
 import { getPhotos } from '../lib/dataService';
 
@@ -237,11 +238,16 @@ const PhotoGallery = ({ photos: externalPhotos = [], title = "Galerie Photo", de
               <i className="fas fa-chevron-right text-xl"></i>
             </button>
             
-            <img 
-              src={selectedPhoto.src} 
-              alt={selectedPhoto.title} 
-              className="w-full h-auto max-h-[80vh] object-contain mx-auto"
-            />
+            <div className="relative w-full h-[80vh]">
+              <Image 
+                src={selectedPhoto.src} 
+                alt={selectedPhoto.title} 
+                fill
+                className="object-contain"
+                sizes="100vw"
+                priority
+              />
+            </div>
             
             <div className="absolute bottom-4 left-0 right-0 text-center text-white p-2 bg-black bg-opacity-50 rounded-t-lg">
               <h3 className="font-bold text-lg">{selectedPhoto.title}</h3>

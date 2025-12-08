@@ -3,6 +3,7 @@
 import Head from 'next/head';
 import Script from 'next/script';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 export default function Layout({ children, title = "EEADB-Tchirimina" }) {
@@ -59,12 +60,13 @@ export default function Layout({ children, title = "EEADB-Tchirimina" }) {
                   className="flex items-center gap-2 focus:outline-none focus:ring-4 focus:ring-eeadb-blue-300 p-1 rounded transition-all duration-200"
                   aria-label="Page d'accueil de l'Église Évangélique des Assemblées de Dieu du Bénin – Tchirimina"
                 >
-                  <img
+                  <Image
                     src="/assets/logo-ad.png"
                     alt="Logo EEADB-Tchirimina"
                     className="h-12 w-auto object-contain"
-                    width="48"
-                    height="48"
+                    width={48}
+                    height={48}
+                    priority
                   />
                   <div>
                     <h1 className="text-lg md:text-xl font-bold">EEADB-Tchirimina</h1>

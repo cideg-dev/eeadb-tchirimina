@@ -1,8 +1,14 @@
+const isProd = process.env.NODE_ENV === 'production';
+const repoName = '/eeadb-tchirimina';
+
 module.exports = {
   reactStrictMode: true,
   trailingSlash: true,
-  assetPrefix: process.env.NODE_ENV === 'production' ? '' : undefined,
+  output: 'export', // Nécessaire pour GitHub Pages
+  basePath: isProd ? repoName : '',
+  assetPrefix: isProd ? repoName : undefined,
   images: {
+    unoptimized: true, // Nécessaire pour l'export statique
     remotePatterns: [
       {
         protocol: 'https',
@@ -31,40 +37,7 @@ module.exports = {
   experimental: {
     scrollRestoration: true,
   },
-  async headers() {
-    return [
-      {
-        // Appliquer des headers de sécurité à toutes les routes
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.googleapis.com https://translate.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://translate.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://translate.googleapis.com; frame-src 'self' https://www.youtube.com; object-src 'none'; base-uri 'self'",
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
-          },
-        ],
-      },
-    ]
-  },
+  // Les headers ne sont pas supportés avec output: 'export'
   env: {
     // Variables d'environnement
   },
