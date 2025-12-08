@@ -12,6 +12,10 @@ const NewsletterSignup = () => {
     setIsSubmitting(true);
 
     try {
+      // Simulation d'appel API pour GitHub Pages (site statique)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      /*
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: {
@@ -28,6 +32,15 @@ const NewsletterSignup = () => {
       } else {
         setStatus({ type: 'error', message: data.message });
       }
+      */
+
+      // Simulation de succès
+      setStatus({ 
+        type: 'success', 
+        message: 'Merci de votre inscription ! (Simulation - Site Statique)' 
+      });
+      setEmail('');
+
     } catch (error) {
       setStatus({ 
         type: 'error', 

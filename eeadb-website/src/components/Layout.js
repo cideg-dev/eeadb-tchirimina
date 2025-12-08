@@ -132,16 +132,6 @@ export default function Layout({ children, title = "EEADB-Tchirimina" }) {
                       <i className="fas fa-envelope text-sm" aria-hidden="true"></i> Contact
                     </Link>
                   </li>
-                  <li>
-                    <a
-                      href="https://eeadb-prive.onrender.com/"
-                      target="_blank"
-                      rel="noopener"
-                      className="flex items-center gap-1 px-3 py-2 text-sm md:text-base text-white hover:bg-eeadb-blue-600 rounded transition-colors focus:outline-none focus:ring-4 focus:ring-eeadb-blue-300"
-                    >
-                      <i className="fas fa-lock text-sm" aria-hidden="true"></i> Zone privée
-                    </a>
-                  </li>
                 </ul>
               </nav>
 

@@ -15,23 +15,18 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        setUser(data.user);
-        router.push('/dashboard'); // Rediriger vers le dashboard après connexion
-        return { success: true };
-      } else {
-        return { success: false, message: data.message };
+      // Simulation pour site statique
+      // const res = await fetch('/api/auth/login', { ... });
+      
+      // Simulation basique
+      if (email === 'admin@eeadb-tchirimina.org' && password === 'admin') {
+         const fakeUser = { name: 'Admin', email };
+         setUser(fakeUser);
+         router.push('/dashboard');
+         return { success: true };
       }
+
+      return { success: false, message: 'Identifiants invalides (Simulation)' };
     } catch (error) {
       return { success: false, message: 'Erreur de connexion' };
     }
@@ -39,9 +34,8 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-      });
+      // Simulation
+      // await fetch('/api/auth/logout', { ... });
       setUser(null);
       router.push('/');
     } catch (error) {
@@ -51,14 +45,9 @@ export function AuthProvider({ children }) {
 
   const checkAuthStatus = async () => {
     try {
-      const res = await fetch('/api/auth/me');
-      const data = await res.json();
-
-      if (data.success) {
-        setUser(data.user);
-      } else {
-        setUser(null);
-      }
+      // Simulation: pas d'auth persistante sur site statique sans backend externe
+      // const res = await fetch('/api/auth/me');
+      setUser(null);
     } catch (error) {
       setUser(null);
     } finally {

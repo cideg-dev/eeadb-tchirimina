@@ -4,12 +4,14 @@
  * @module DataService
  */
 
+const BASE_PATH = process.env.NODE_ENV === 'production' ? '/eeadb-tchirimina' : '';
+
 // Configuration des endpoints autorisés (whitelist)
 const ALLOWED_ENDPOINTS = {
-  'verset_du_jour.json': '/api/verset_du_jour.json',
-  'events.json': '/api/events.json',
-  'photos.json': '/api/photos.json',
-  'resources.json': '/api/resources.json'
+  'verset_du_jour.json': `${BASE_PATH}/api/verset_du_jour.json`,
+  'events.json': `${BASE_PATH}/api/events.json`,
+  'photos.json': `${BASE_PATH}/api/photos.json`,
+  'resources.json': `${BASE_PATH}/api/resources.json`
 };
 
 // Données fallback centralisées
