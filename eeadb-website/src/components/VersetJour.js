@@ -3,82 +3,82 @@
 import { useState, useEffect } from 'react';
 import { getVersetDuJour } from '../lib/dataService';
 
+// Skeleton Loader Component
+const VersetSkeleton = () => (
+  <div className="relative bg-eeadb-blue-dark text-white py-12 px-4 rounded-lg shadow-lg overflow-hidden w-full min-h-[320px] flex flex-col justify-center items-center">
+    <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-pattern"></div>
+    <div className="relative z-10 max-w-3xl mx-auto text-center w-full animate-pulse">
+      <div className="h-6 bg-eeadb-blue-600 rounded-md w-1/3 mx-auto mb-8"></div>
+      <div className="space-y-4">
+        <div className="h-8 bg-eeadb-blue-500 rounded-md w-full"></div>
+        <div className="h-8 bg-eeadb-blue-500 rounded-md w-5/6 mx-auto"></div>
+        <div className="h-8 bg-eeadb-blue-500 rounded-md w-3/4 mx-auto"></div>
+      </div>
+      <div className="h-6 bg-eeadb-blue-600 rounded-md w-1/4 ml-auto mt-6"></div>
+    </div>
+  </div>
+);
+
+
 const VersetJour = ({ versetData }) => {
-  const [verset, setVerset] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [verset, setVerset] = useState(versetData || null);
   const [error, setError] = useState(null);
-  const [isHovered, setIsHovered] = useState(false);
+  const [loading, setLoading] = useState(!versetData);
 
   useEffect(() => {
     if (versetData) {
-      // Si les données sont passées en props, les utiliser directement
       setVerset(versetData);
       setLoading(false);
     } else {
-      // Sinon, charger les données depuis le service
       const fetchVerset = async () => {
         try {
-          setLoading(true);
           const data = await getVersetDuJour();
           setVerset(data);
         } catch (err) {
           setError("Impossible de charger le verset du jour. Veuillez réessayer plus tard.");
+          console.error(err);
         } finally {
           setLoading(false);
         }
       };
-
       fetchVerset();
     }
   }, [versetData]);
 
+  if (loading) {
+    return <VersetSkeleton />;
+  }
+
   if (error) {
     return (
-      <div className="bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-500 text-red-700 p-6 rounded-xl shadow-md">
-        <div className="flex items-center">
-          <i className="fas fa-exclamation-triangle text-red-500 mr-3"></i>
-          <p>{error}</p>
-        </div>
+      <div className="text-center p-8 bg-red-800 text-white rounded-lg shadow-lg min-h-[320px] flex justify-center items-center">
+        <p>{error}</p>
       </div>
     );
   }
-
-  if (loading) {
+  
+  if (!verset || !verset.verset) {
     return (
-      <div className="bg-gradient-to-r from-eeadb-blue-600 to-eeadb-blue-700 text-white p-8 rounded-2xl text-center shadow-lg animate-pulse">
-        <h2 className="text-2xl font-bold mb-4 text-center">Verset du jour</h2>
-        <div className="h-6 bg-eeadb-blue-300 rounded mb-4"></div>
-        <div className="h-4 bg-eeadb-blue-300 rounded w-3/4 mx-auto mb-2"></div>
-        <div className="h-4 bg-eeadb-blue-300 rounded w-1/2 mx-auto"></div>
-      </div>
-    );
+        <div className="text-center p-8 bg-eeadb-blue-dark text-white rounded-lg shadow-lg min-h-[320px] flex justify-center items-center">
+          <p>Le verset du jour n'est pas disponible pour le moment.</p>
+        </div>
+      );
   }
 
   return (
-    <div 
-      className={`bg-gradient-to-br from-eeadb-blue-600 to-eeadb-blue-800 text-white p-8 rounded-2xl shadow-lg transition-all duration-300 transform ${
-        isHovered ? 'scale-[1.02] shadow-xl' : ''
-      }`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className="flex justify-center mb-3">
-        <div className="w-12 h-1 bg-eeadb-gold-300 rounded-full"></div>
-      </div>
-      <h2 className="text-2xl font-bold mb-6 text-center">Verset du jour</h2>
-      <div className="relative">
-        <i className="fas fa-quote-left text-eeadb-gold-300 text-3xl absolute -top-4 -left-2 opacity-50"></i>
-        <blockquote className="text-xl italic mb-6 text-center pl-8">
-          "{verset.text}"
+    <section className="relative bg-eeadb-blue-dark text-white py-12 px-4 rounded-lg shadow-lg overflow-hidden min-h-[320px] flex flex-col justify-center">
+      <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-pattern"></div>
+      <div className="relative z-10 max-w-3xl mx-auto text-center">
+        <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center text-eeadb-blue-300">Verset du jour</h2>
+        <blockquote className="text-2xl sm:text-3xl md:text-4xl leading-relaxed italic mb-4">
+          "{verset.verset}"
         </blockquote>
-        <i className="fas fa-quote-right text-eeadb-gold-300 text-3xl absolute -bottom-4 -right-2 opacity-50"></i>
+        <cite className="block text-right font-medium text-lg sm:text-xl">— {verset.reference}</cite>
+        {verset.source && (
+          <p className="text-xs sm:text-sm text-eeadb-blue-200 text-center mt-4 font-light">Source: {verset.source}</p>
+        )}
       </div>
-      <cite className="block text-right font-medium text-xl">— {verset.reference}</cite>
-      <div className="flex justify-center mt-6">
-        <div className="w-12 h-1 bg-eeadb-gold-300 rounded-full"></div>
-      </div>
-      <p className="text-sm text-eeadb-blue-200 text-center mt-4 font-light">{verset.source}</p>
-    </div>
+    </section>
   );
 };
 
