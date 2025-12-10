@@ -64,6 +64,13 @@ const ContactForm = () => {
     setStatus({ type: 'info', message: 'Envoi en cours...' });
 
     try {
+      // Note: Sur GitHub Pages (site statique), l'API route n'est pas disponible.
+      // Pour un vrai formulaire, utiliser un service comme Formspree ou EmailJS.
+      // Simulation d'envoi pour la démo :
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Simulation de succès
+      /* 
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -77,10 +84,11 @@ const ContactForm = () => {
       if (!response.ok) {
         throw new Error(result.error || 'Erreur lors de l\'envoi du message');
       }
+      */
 
       setStatus({
         type: 'success',
-        message: 'Merci ! Votre message a bien été envoyé. Nous vous répondrons dans les plus brefs délais.'
+        message: 'Merci ! Votre message a bien été envoyé. (Simulation - Site Statique)'
       });
       setFormData({ name: '', email: '', message: '', subject: '' });
     } catch (error) {

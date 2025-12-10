@@ -1,8 +1,14 @@
+const isProd = process.env.NODE_ENV === 'production';
+const repoName = '/eeadb-tchirimina';
+
 module.exports = {
   reactStrictMode: true,
   trailingSlash: true,
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/eeadb-tchirimina' : undefined,
+  output: 'export', // Nécessaire pour GitHub Pages
+  basePath: isProd ? repoName : '',
+  assetPrefix: isProd ? repoName : undefined,
   images: {
+    unoptimized: true, // Nécessaire pour l'export statique
     remotePatterns: [
       {
         protocol: 'https',
@@ -31,36 +37,7 @@ module.exports = {
   experimental: {
     scrollRestoration: true,
   },
-  async headers() {
-    return [
-      {
-        // Appliquer des headers de sécurité à toutes les routes
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
-          },
-        ],
-      },
-    ]
-  },
+  // Les headers ne sont pas supportés avec output: 'export'
   env: {
     // Variables d'environnement
   },
