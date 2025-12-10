@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "title": "Guide de prière",
+    "description": "Guide complet sur la prière dans la vie chrétienne",
+    "type": "document",
+    "date": "2025-12-08"
+  },
+  {
+    "id": 2,
+    "title": "Étude sur la sanctification",
+    "description": "Étude approfondie sur la sanctification progressive",
+    "type": "document",
+    "date": "2025-12-08"
+  },
+  {
+    "id": 3,
+    "title": "Cantiques et louanges",
+    "description": "Collection de cantiques et chants d'adoration",
+    "type": "audio",
+    "date": "2025-12-08"
+  }
+]
