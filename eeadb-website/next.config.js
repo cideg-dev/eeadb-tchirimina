@@ -1,7 +1,7 @@
 module.exports = {
   reactStrictMode: true,
   trailingSlash: true,
-  assetPrefix: process.env.NODE_ENV === 'production' ? '' : undefined,
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/eeadb-tchirimina' : undefined,
   images: {
     remotePatterns: [
       {
