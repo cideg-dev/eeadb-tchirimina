@@ -12,14 +12,14 @@ const SEOHead = ({ title, description, image, url, type = 'website', ...props })
       <meta property="og:url" content={url || 'https://eeadb-tchirimina.org/'} />
       <meta property="og:title" content={title ? `${title} - EEADB-Tchirimina` : 'EEADB-Tchirimina - Avec Dieu nous ferons des exploits'} />
       <meta property="og:description" content={description || 'Site officiel de l\'Église Évangélique des Assemblées de Dieu du Bénin – Tchirimina (Temple BERACA)'} />
-      <meta property="og:image" content={image || '/assets/logo-ad.png'} />
+      <meta property="og:image" content={image || '/eeadb-tchirimina/assets/logo-ad.png'} />
       
       {/* Twitter */}
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content={url || 'https://eeadb-tchirimina.org/'} />
       <meta property="twitter:title" content={title ? `${title} - EEADB-Tchirimina` : 'EEADB-Tchirimina - Avec Dieu nous ferons des exploits'} />
       <meta property="twitter:description" content={description || 'Site officiel de l\'Église Évangélique des Assemblées de Dieu du Bénin – Tchirimina (Temple BERACA)'} />
-      <meta property="twitter:image" content={image || '/assets/logo-ad.png'} />
+      <meta property="twitter:image" content={image || '/eeadb-tchirimina/assets/logo-ad.png'} />
       
       {/* Canonical URL */}
       <link rel="canonical" href={url || 'https://eeadb-tchirimina.org/'} />
@@ -39,7 +39,7 @@ const SEOHead = ({ title, description, image, url, type = 'website', ...props })
             "name": "Église Évangélique des Assemblées de Dieu du Bénin – Tchirimina",
             "alternateName": "EEADB-Tchirimina",
             "url": "https://eeadb-tchirimina.org/",
-            "logo": "/assets/logo-ad.png",
+            "logo": "/eeadb-tchirimina/assets/logo-ad.png",
             "description": "Temple BERACA - Église Évangélique des Assemblées de Dieu du Bénin – Tchirimina",
             "address": {
               "@type": "PostalAddress",

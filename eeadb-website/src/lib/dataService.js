@@ -8,10 +8,10 @@ const BASE_PATH = process.env.NODE_ENV === 'production' ? '/eeadb-tchirimina' : 
 
 // Configuration des endpoints autorisés (whitelist)
 const ALLOWED_ENDPOINTS = {
-  'verset_du_jour.json': `${BASE_PATH}/api/verset_du_jour.json`,
-  'events.json': `${BASE_PATH}/api/events.json`,
-  'photos.json': `${BASE_PATH}/api/photos.json`,
-  'resources.json': `${BASE_PATH}/api/resources.json`
+  'verset_du_jour.json': `${BASE_PATH}/data/verset_du_jour.json`,
+  'events.json': `${BASE_PATH}/data/events.json`,
+  'photos.json': `${BASE_PATH}/data/photos.json`,
+  'resources.json': `${BASE_PATH}/data/resources.json`
 };
 
 // Données fallback centralisées
@@ -33,21 +33,21 @@ const FALLBACK_DATA = {
   photos: [
     {
       id: 1,
-      src: "/images/placeholder-culte.svg",
+      src: "/eeadb-tchirimina/images/placeholder-culte.svg",
       alt: "Culte dominical",
       title: "Culte du dimanche matin",
       description: "Notre culte hebdomadaire du dimanche"
     },
     {
       id: 2,
-      src: "/images/placeholder-priere.svg",
+      src: "/eeadb-tchirimina/images/placeholder-priere.svg",
       alt: "Groupe de prière",
       title: "Groupe de prière",
       description: "Groupe de prière intercession"
     },
     {
       id: 3,
-      src: "/images/placeholder-ecole.svg",
+      src: "/eeadb-tchirimina/images/placeholder-ecole.svg",
       alt: "École dominicale",
       title: "École dominicale",
       description: "École biblique pour enfants"

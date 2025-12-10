@@ -62,21 +62,21 @@ export const FALLBACK_DATA = {
   photos: [
     {
       id: 1,
-      src: "/images/placeholder-culte.svg",
+      src: "/eeadb-tchirimina/images/placeholder-culte.svg",
       alt: "Culte dominical",
       title: "Culte du dimanche matin",
       description: "Notre culte hebdomadaire du dimanche"
     },
     {
       id: 2,
-      src: "/images/placeholder-priere.svg",
+      src: "/eeadb-tchirimina/images/placeholder-priere.svg",
       alt: "Groupe de prière",
       title: "Groupe de prière",
       description: "Groupe de prière intercession"
     },
     {
       id: 3,
-      src: "/images/placeholder-ecole.svg",
+      src: "/eeadb-tchirimina/images/placeholder-ecole.svg",
       alt: "École dominicale",
       title: "École dominicale",
       description: "École biblique pour enfants"

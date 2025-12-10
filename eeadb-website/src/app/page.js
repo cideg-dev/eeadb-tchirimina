@@ -22,6 +22,15 @@ const PhotoGallery = dynamic(() => import('../components/PhotoGallery'), {
   ssr: false
 });
 
+const Leadership = dynamic(() => import('../components/Leadership'), {
+  loading: () => (
+    <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm min-h-[400px] flex items-center justify-center">
+      <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-eeadb-blue"></div>
+    </div>
+  ),
+  ssr: false
+});
+
 export default function Home() {
   return (
     <Layout title="Accueil - EEADB-Tchirimina">
@@ -82,6 +91,20 @@ export default function Home() {
           </div>
           <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 transition-all duration-300 hover:shadow-xl">
             <PhotoGallery />
+          </div>
+        </div>
+
+        {/* Section direction de l'église */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold text-eeadb-blue mb-4">Direction de l'Église</h2>
+            <div className="w-24 h-1 bg-eeadb-gold-500 mx-auto mb-4 rounded-full"></div>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Découvrez les dirigeants qui nous guident dans la foi et le service
+            </p>
+          </div>
+          <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 transition-all duration-300 hover:shadow-xl">
+            <Leadership />
           </div>
         </div>
       </main>

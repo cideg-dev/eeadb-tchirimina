@@ -61,7 +61,7 @@ export default function Layout({ children, title = "EEADB-Tchirimina" }) {
                   aria-label="Page d'accueil de l'Église Évangélique des Assemblées de Dieu du Bénin – Tchirimina"
                 >
                   <Image
-                    src="/assets/logo-ad.png"
+                    src="/eeadb-tchirimina/assets/logo-ad.png"
                     alt="Logo EEADB-Tchirimina"
                     className="h-12 w-auto object-contain"
                     width={48}
@@ -130,6 +130,14 @@ export default function Layout({ children, title = "EEADB-Tchirimina" }) {
                       aria-current={title.includes("Contact") ? "page" : undefined}
                     >
                       <i className="fas fa-envelope text-sm" aria-hidden="true"></i> Contact
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/login"
+                      className="flex items-center gap-1 px-3 py-2 text-sm md:text-base text-white hover:bg-eeadb-blue-600 rounded transition-colors focus:outline-none focus:ring-4 focus:ring-eeadb-blue-300"
+                    >
+                      <i className="fas fa-user-lock text-sm" aria-hidden="true"></i> Admin
                     </Link>
                   </li>
                 </ul>
@@ -211,6 +219,15 @@ export default function Layout({ children, title = "EEADB-Tchirimina" }) {
                       aria-current={title.includes("Contact") ? "page" : undefined}
                     >
                       <i className="fas fa-envelope" aria-hidden="true"></i> Contact
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/login"
+                      className="flex items-center gap-2 px-3 py-3 text-base text-white hover:bg-eeadb-blue-600 rounded transition-colors focus:outline-none focus:ring-4 focus:ring-eeadb-blue-300"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <i className="fas fa-user-lock" aria-hidden="true"></i> Admin
                     </Link>
                   </li>
                 </ul>

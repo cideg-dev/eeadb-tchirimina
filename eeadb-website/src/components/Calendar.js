@@ -65,25 +65,31 @@ const Calendar = ({ events: externalEvents = [] }) => {
   useEffect(() => {
     if (typeof window !== 'undefined' && calendarRef.current) {
       let calendarInstance = null;
-      
+
       // Import dynamique de FullCalendar pour éviter les erreurs de serveur
       const initializeCalendar = async () => {
         try {
-          // Charger uniquement quand nécessaire
-          if (calendarEvents.length === 0) return;
-          
           const { Calendar } = await import('@fullcalendar/core');
           const { default: dayGridPlugin } = await import('@fullcalendar/daygrid');
           const { default: timeGridPlugin } = await import('@fullcalendar/timegrid');
           const { default: interactionPlugin } = await import('@fullcalendar/interaction');
-          
+
+          // Nettoyer l'instance précédente avant de créer une nouvelle
+          if (calendarInstance) {
+            calendarInstance.destroy();
+          }
+
           calendarInstance = new Calendar(calendarRef.current, {
             plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
             initialView: view,
             events: calendarEvents.map(event => ({
-              ...event,
-              start: event.start ? new Date(event.start).toISOString().split('T')[0] : null,
-              end: event.end ? new Date(event.end).toISOString().split('T')[0] : null,
+              id: event.id,
+              title: event.title,
+              start: event.start ? new Date(event.start).toISOString() : null,
+              end: event.end ? new Date(event.end).toISOString() : null,
+              description: event.description || event.extendedProps?.description,
+              location: event.location || event.extendedProps?.location,
+              className: event.className || 'default-event-class',
             })), // Formater correctement les dates pour FullCalendar
             locale: 'fr',
             headerToolbar: {
@@ -96,8 +102,8 @@ const Calendar = ({ events: externalEvents = [] }) => {
                 title: info.event.title,
                 start: info.event.start,
                 end: info.event.end,
-                description: info.event.extendedProps?.description,
-                location: info.event.extendedProps?.location
+                description: info.event.extendedProps?.description || info.event.description,
+                location: info.event.extendedProps?.location || info.event.location
               });
             },
             // Configuration pour la performance et la stabilité mobile
@@ -141,18 +147,19 @@ const Calendar = ({ events: externalEvents = [] }) => {
         }
       };
 
-      // Délai pour éviter le blocage du thread principal
-      const timer = setTimeout(initializeCalendar, 100);
+      // Vérifier si les événements sont chargés avant d'initialiser le calendrier
+      if (calendarEvents.length > 0) {
+        initializeCalendar();
+      }
 
       // Nettoyer l'instance du calendrier lors du démontage
       return () => {
-        clearTimeout(timer);
         if (calendarInstance) {
           calendarInstance.destroy();
         }
       };
     }
-  }, [calendarEvents, view]);
+  }, [calendarEvents, view, width]); // Ajouter width aux dépendances pour la mise à jour responsive
 
   const handleViewChange = (newView) => {
     setView(newView);
