@@ -1,7 +1,9 @@
+'use client';
+
 // components/PrivateRoute.js
-import { useAuth } from './AuthProvider';
+import { useAuth } from './ClientAuthProvider';
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export default function PrivateRoute({ children }) {
   const { user, loading } = useAuth();

@@ -1,11 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../components/AuthProvider';
+import { useAuth } from '../../components/ClientAuthProvider';
 import PrivateRoute from '../../components/PrivateRoute';
 
 const AdminPage = () => {
-  const { user, login, logout } = useAuth();
+  const authContext = useAuth();
+  const user = authContext?.user;
+  const login = authContext?.login;
+  const logout = authContext?.logout;
   const [formData, setFormData] = useState({
     type: 'pasteur', // pasteur, diacre, departement, membre
     nom: '',
@@ -182,7 +185,7 @@ const AdminPage = () => {
     e.preventDefault();
     // Dans une application réelle, on ferait une vérification avec un serveur
     // Pour l'exemple, nous utilisons un simple mot de passe
-    if (loginForm.username === 'admin' && loginForm.password === 'admin123') {
+    if (loginForm.username === 'admin' && loginForm.password === 'admin123' && login) {
       login({ username: loginForm.username });
       setShowLoginForm(false);
     } else {
@@ -197,8 +200,8 @@ const AdminPage = () => {
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-eeadb-blue">Administration des Dirigeants</h1>
-              <button 
-                onClick={logout}
+              <button
+                onClick={() => logout && logout()}
                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors"
               >
                 Déconnexion

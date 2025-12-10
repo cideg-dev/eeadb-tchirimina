@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../../components/AuthProvider';
+import { useAuth } from '../../components/ClientAuthProvider';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -13,7 +13,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Dans une application réelle, on ferait une vérification avec un serveur
     // Pour l'exemple, nous utilisons un simple mot de passe
     if (username === 'admin' && password === 'admin123') {
