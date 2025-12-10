@@ -3,6 +3,32 @@
 import { useState, useEffect, useRef } from 'react';
 import { getEvents } from '../lib/dataService';
 
+// Hook personnalisé pour détecter la taille de l'écran
+const useScreenSize = () => {
+  const [screenSize, setScreenSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    // Vérifier que window est disponible
+    if (typeof window !== 'undefined') {
+      handleResize(); // Obtenir la taille initiale
+      window.addEventListener('resize', handleResize);
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }
+  }, []);
+
+  return screenSize;
+};
+
 const Calendar = ({ events: externalEvents = [] }) => {
   const [view, setView] = useState('dayGridMonth');
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -10,6 +36,7 @@ const Calendar = ({ events: externalEvents = [] }) => {
   const [loading, setLoading] = useState(true);
   const calendarRef = useRef(null);
   const [activeButton, setActiveButton] = useState(view);
+  const { width } = useScreenSize();
 
   // Charger les événements depuis le service de données
   useEffect(() => {
@@ -53,9 +80,17 @@ const Calendar = ({ events: externalEvents = [] }) => {
           calendarInstance = new Calendar(calendarRef.current, {
             plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
             initialView: view,
-            events: calendarEvents.slice(0, 20), // Limiter à 20 événements pour la performance
+            events: calendarEvents.map(event => ({
+              ...event,
+              start: event.start ? new Date(event.start).toISOString().split('T')[0] : null,
+              end: event.end ? new Date(event.end).toISOString().split('T')[0] : null,
+            })), // Formater correctement les dates pour FullCalendar
             locale: 'fr',
-            headerToolbar: false, // Désactiver la toolbar pour améliorer les performances
+            headerToolbar: {
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            }, // Réactiver la toolbar pour une navigation standard
             eventClick: function(info) {
               setSelectedEvent({
                 title: info.event.title,
@@ -65,11 +100,39 @@ const Calendar = ({ events: externalEvents = [] }) => {
                 location: info.event.extendedProps?.location
               });
             },
-            buttonIcons: false,
-            // Configuration minimale pour la performance
-            dayMaxEvents: 3,
-            eventDisplay: 'block',
-            height: 'auto'
+            // Configuration pour la performance et la stabilité mobile
+            dayMaxEvents: true, // Autoriser le "more" pour éviter le chevauchement
+            eventDisplay: 'block', // Utiliser 'block' pour une meilleure lisibilité
+            height: 'auto', // Utiliser la hauteur automatique
+            contentHeight: width < 768 ? 500 : 600, // Hauteur réduite sur mobile
+            aspectRatio: width < 768 ? 1.2 : 1.8, // Ratio plus petit sur mobile pour meilleure lisibilité
+            fixedWeekCount: false, // Permettre à la vue mois de s'adapter
+            weekends: true, // Afficher les week-ends
+            navLinks: true, // Permettre la navigation par clic sur les dates
+            nowIndicator: true, // Indiquer la date actuelle
+            editable: false, // Désactiver l'édition
+            selectable: false, // Désactiver la sélection
+            selectMirror: true,
+            dayMaxEventRows: width < 768 ? 2 : 4, // Moins d'événements par jour sur mobile pour plus de lisibilité
+            // Configuration spécifique pour mobile
+            views: {
+              dayGridMonth: {
+                dayMaxEventRows: width < 768 ? 2 : 3, // Moins d'événements par jour en vue mensuelle sur mobile
+              },
+              timeGridWeek: {
+                slotDuration: '00:30:00', // Intervalle de 30 minutes
+                slotEventOverlap: false, // Désactiver le chevauchement des événements
+              },
+              timeGridDay: {
+                slotDuration: '00:30:00',
+                slotEventOverlap: false,
+              }
+            },
+            // Responsive breakpoints
+            initialDate: new Date(), // Définir la date initiale à aujourd'hui
+            // Désactiver les animations pour améliorer la performance mobile
+            showNonCurrentDates: false, // Cacher les dates du mois précédent/suivant pour moins de clutter
+            progressiveEventRendering: true, // Activer le rendu progressif pour les performances
           });
 
           calendarInstance.render();
@@ -136,7 +199,7 @@ const Calendar = ({ events: externalEvents = [] }) => {
         </div>
 
         {/* Conteneur pour le calendrier FullCalendar */}
-        <div ref={calendarRef} className="min-h-[500px] bg-white p-4 rounded-xl border border-gray-200 shadow-inner" />
+        <div ref={calendarRef} className="min-h-[600px] bg-white p-4 rounded-xl border border-gray-200 shadow-inner" />
         
         {/* Affichage des événements dans une liste comme solution de repli */}
         <div className="mt-8">
