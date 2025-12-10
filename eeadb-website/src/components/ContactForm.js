@@ -2,6 +2,20 @@
 
 import { useState } from 'react';
 
+// Fonction utilitaire pour nettoyer les entrées utilisateur
+const sanitizeInput = (input) => {
+  if (typeof input !== 'string') return '';
+
+  // Suppression des caractères dangereux
+  return input
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Suppression des scripts
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '') // Suppression des iframes
+    .replace(/javascript:/gi, '') // Suppression des javascript: URLs
+    .replace(/vbscript:/gi, '') // Suppression des vbscript: URLs
+    .replace(/on\w+="[^"]*"/gi, '') // Suppression des événements HTML
+    .trim();
+};
+
 const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -12,24 +26,37 @@ const ContactForm = () => {
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [focusedField, setFocusedField] = useState('');
+  const [lastSubmissionTime, setLastSubmissionTime] = useState(0);
 
   const validate = (data) => {
     const errors = [];
 
+    // Validation du nom
     if (!data.name || data.name.trim().length < 2) {
       errors.push('Le nom doit contenir au moins 2 caractères.');
+    } else if (/[<>{}[\]\\;'"`|]/.test(data.name)) {
+      errors.push('Le nom contient des caractères non autorisés.');
     }
 
-    if (!data.email || !/^\S+@\S+\.\S+$/.test(data.email)) {
+    // Validation de l'email
+    if (!data.email || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email)) {
       errors.push('Adresse e-mail invalide.');
     }
 
+    // Validation du sujet
     if (!data.subject || data.subject.trim().length < 3) {
       errors.push('Le sujet doit contenir au moins 3 caractères.');
+    } else if (/[<>{}[\]\\;'"`|]/.test(data.subject)) {
+      errors.push('Le sujet contient des caractères non autorisés.');
     }
 
+    // Validation du message
     if (!data.message || data.message.trim().length < 10) {
       errors.push('Le message doit contenir au moins 10 caractères.');
+    } else if (data.message.length > 1000) {
+      errors.push('Le message est trop long (maximum 1000 caractères).');
+    } else if (/<script/i.test(data.message)) {
+      errors.push('Le message contient du code non autorisé.');
     }
 
     return errors;
@@ -37,9 +64,11 @@ const ContactForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // Nettoyer l'entrée avant de la stocker
+    const sanitizedValue = sanitizeInput(value);
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: sanitizedValue
     }));
   };
 
@@ -53,6 +82,20 @@ const ContactForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Protection contre le spam: vérifier le temps écoulé depuis la dernière soumission
+    const now = Date.now();
+    const timeSinceLastSubmission = now - lastSubmissionTime;
+    const minTimeBetweenSubmissions = 10000; // 10 secondes
+
+    if (timeSinceLastSubmission < minTimeBetweenSubmissions) {
+      setStatus({
+        type: 'error',
+        message: 'Veuillez attendre avant d\'envoyer un nouveau message.'
+      });
+      return;
+    }
+
     const errors = validate(formData);
 
     if (errors.length) {
@@ -64,13 +107,16 @@ const ContactForm = () => {
     setStatus({ type: 'info', message: 'Envoi en cours...' });
 
     try {
+      // Mise à jour de la dernière heure de soumission
+      setLastSubmissionTime(now);
+
       // Note: Sur GitHub Pages (site statique), l'API route n'est pas disponible.
       // Pour un vrai formulaire, utiliser un service comme Formspree ou EmailJS.
       // Simulation d'envoi pour la démo :
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Simulation de succès
-      /* 
+      /*
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {

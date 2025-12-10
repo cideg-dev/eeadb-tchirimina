@@ -83,7 +83,7 @@ const FALLBACK_DATA = {
  * @param {string} filename - Le nom du fichier/endpoint
  * @returns {boolean} - True si l'endpoint est autorisé
  */
-const isValidEndpoint = (filename) => {
+export const isValidEndpoint = (filename) => {
   return Object.keys(ALLOWED_ENDPOINTS).includes(filename);
 };
 
