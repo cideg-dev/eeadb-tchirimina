@@ -1,7 +1,6 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
 const AuthContext = createContext();
 
@@ -45,7 +44,6 @@ const isValidToken = (token) => {
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   const login = async (userData) => {
     try {
@@ -67,7 +65,10 @@ export default function AuthProvider({ children }) {
     try {
       // Simulation
       setUser(null);
-      router.push('/');
+      // Utiliser window.location pour la redirection côté client
+      if (typeof window !== 'undefined') {
+        window.location.href = '/';
+      }
     } catch (error) {
       console.error('Erreur de déconnexion:', error);
     }

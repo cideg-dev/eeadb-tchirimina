@@ -1,14 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '../../components/ClientAuthProvider';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const router = useRouter();
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
@@ -18,7 +16,10 @@ const LoginPage = () => {
     // Pour l'exemple, nous utilisons un simple mot de passe
     if (username === 'admin' && password === 'admin123') {
       login({ username });
-      router.push('/admin');
+      // Utiliser window.location pour la redirection côté client
+      if (typeof window !== 'undefined') {
+        window.location.href = '/admin';
+      }
     } else {
       setError('Identifiants incorrects');
     }

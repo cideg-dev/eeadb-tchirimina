@@ -1,6 +1,5 @@
 // components/AuthProvider.js
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 
 const AuthContext = createContext();
 
@@ -13,17 +12,19 @@ export function useAuth() {
 const checkAccess = () => {
   // Pour un site statique, on peut utiliser un mécanisme basé sur des jetons
   // ou des liens pré-signés générés via GitHub Actions
-  const urlParams = new URLSearchParams(window.location.search);
-  const token = urlParams.get('token');
+  if (typeof window !== 'undefined') {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
 
-  // Dans un vrai scénario, on vérifierait la signature du token
-  // Pour l'instant, on utilise une vérification basique
-  // Cette vérification serait plus robuste avec un token HMAC signé
+    // Dans un vrai scénario, on vérifierait la signature du token
+    // Pour l'instant, on utilise une vérification basique
+    // Cette vérification serait plus robuste avec un token HMAC signé
 
-  if (token) {
-    // Ici, en production, on devrait vérifier la signature du token
-    // et son expiration
-    return isValidToken(token);
+    if (token) {
+      // Ici, en production, on devrait vérifier la signature du token
+      // et son expiration
+      return isValidToken(token);
+    }
   }
 
   return false;
@@ -43,7 +44,6 @@ const isValidToken = (token) => {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   const login = async (email, password) => {
     try {
@@ -63,7 +63,10 @@ export function AuthProvider({ children }) {
     try {
       // Simulation
       setUser(null);
-      router.push('/');
+      // Utiliser window.location pour la redirection côté client
+      if (typeof window !== 'undefined') {
+        window.location.href = '/';
+      }
     } catch (error) {
       console.error('Erreur de déconnexion:', error);
     }

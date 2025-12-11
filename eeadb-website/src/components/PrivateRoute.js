@@ -3,17 +3,18 @@
 // components/PrivateRoute.js
 import { useAuth } from './ClientAuthProvider';
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
 export default function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
-  const router = useRouter();
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login');
+      // Utiliser window.location pour la redirection côté client
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
     }
-  }, [user, loading, router]);
+  }, [user, loading]);
 
   if (loading) {
     return (
