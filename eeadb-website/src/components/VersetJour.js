@@ -19,7 +19,6 @@ const VersetSkeleton = () => (
   </div>
 );
 
-
 const VersetJour = ({ versetData }) => {
   const [verset, setVerset] = useState(versetData || null);
   const [error, setError] = useState(null);
@@ -35,8 +34,13 @@ const VersetJour = ({ versetData }) => {
           const data = await getVersetDuJour();
           setVerset(data);
         } catch (err) {
-          setError("Impossible de charger le verset du jour. Veuillez réessayer plus tard.");
-          console.error(err);
+          console.error('[VersetJour] Erreur de chargement:', err);
+          // Utiliser les données fallback
+          setVerset({
+            text: "Apportez toutes les dîmes à la maison du trésor, afin qu'il y ait de la nourriture dans ma maison; mettez-moi ainsi à l'épreuve, dit l'Éternel des armées, et voyez si je ne vous ouvre pas les fenêtres des cieux, si je ne répands pas sur vous une bénédiction jusqu'à ce qu'il n'y ait plus de place.",
+            reference: "Malachie 3:10",
+            source: "Bible Segond 21"
+          });
         } finally {
           setLoading(false);
         }
@@ -49,15 +53,7 @@ const VersetJour = ({ versetData }) => {
     return <VersetSkeleton />;
   }
 
-  if (error) {
-    return (
-      <div className="text-center p-8 bg-red-800 text-white rounded-lg shadow-lg min-h-[320px] flex justify-center items-center">
-        <p>{error}</p>
-      </div>
-    );
-  }
-  
-  if (!verset || !verset.verset) {
+  if (!verset || !verset.text) {
     return (
         <div className="text-center p-8 bg-eeadb-blue-dark text-white rounded-lg shadow-lg min-h-[320px] flex justify-center items-center">
           <p>Le verset du jour n'est pas disponible pour le moment.</p>
@@ -71,7 +67,7 @@ const VersetJour = ({ versetData }) => {
       <div className="relative z-10 max-w-3xl mx-auto text-center">
         <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center text-eeadb-blue-300">Verset du jour</h2>
         <blockquote className="text-2xl sm:text-3xl md:text-4xl leading-relaxed italic mb-4">
-          "{verset.verset}"
+          "{verset.text}"
         </blockquote>
         <cite className="block text-right font-medium text-lg sm:text-xl">— {verset.reference}</cite>
         {verset.source && (
